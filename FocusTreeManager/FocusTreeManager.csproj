@@ -41,14 +41,14 @@
     <Resource Include="Resources\Cursors\grab.cur" />
     <Resource Include="Resources\Cursors\grabbing.cur" />
     <AppDesigner Include="Properties\" />
-    <Resource Include="GFX\Focus\goal_unknown.png">
+    <Content Include="GFX\Focus\goal_unknown.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="GFX\Interface\Focus_under.png">
+    <Content Include="GFX\Interface\Focus_under.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -72,9 +72,9 @@
     <Resource Include="Changelog.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="GFX\Interface\thisisdog.png">
+    <Content Include="GFX\Interface\thisisdog.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Common\EditorData\Autocomplete\Commands.xml" />
