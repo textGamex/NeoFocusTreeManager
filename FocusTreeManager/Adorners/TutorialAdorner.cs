@@ -165,7 +165,7 @@ namespace FocusTreeManager.Adorners
             , Rect ComponentSpace)
         {
             //Write text somewhere not in the way
-            Tuple<AppTheme, Accent> appStyle = ThemeManager.DetectAppStyle(Application.Current);
+            // Tuple<AppTheme, Accent> appStyle = ThemeManager.DetectAppStyle(Application.Current);
             TextBlock block = new TextBlock
             {
                 Text = LocalizationHelper.getValueForKey(context.CurrentStep.TextKey, LocalesSource.Tutorial),
@@ -188,9 +188,9 @@ namespace FocusTreeManager.Adorners
                 Height = formattedText.Height + ButtonHeightAndMargin,
                 Padding = new Thickness(5),
                 Width = formattedText.Width + bestMargin,
-                Background = (Brush)appStyle.Item1.Resources["WindowBackgroundBrush"],
+                // Background = (Brush)appStyle.Item1.Resources["WindowBackgroundBrush"],
                 BorderThickness = new Thickness(1),
-                BorderBrush = new SolidColorBrush((Color)appStyle.Item2.Resources["AccentColor"]),
+                // BorderBrush = new SolidColorBrush((Color)appStyle.Item2.Resources["AccentColor"]),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Child = new StackPanel
                 {
@@ -203,7 +203,6 @@ namespace FocusTreeManager.Adorners
                 ((StackPanel)border.Child).Children.Add(new Button
                 {
                     Content = LocalizationHelper.getValueForKey("Tutorial_Continue", LocalesSource.Tutorial),
-                    Style = (Style)parent.FindResource("SquareButtonStyle"),
                     Command = context.ContinueCommand,
                     Margin = new Thickness(5),
                     Width = 150,

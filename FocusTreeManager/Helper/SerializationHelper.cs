@@ -38,8 +38,7 @@ namespace FocusTreeManager.Helper
             {
                 return;
             }
-            DataContractSerializer serializer = new DataContractSerializer(project.GetType(), 
-                null, int.MaxValue, false, true, null);
+            DataContractSerializer serializer = new DataContractSerializer(project.GetType());
             using (Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
             {
                 using (XmlDictionaryWriter writer =

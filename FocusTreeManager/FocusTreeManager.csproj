@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -36,12 +36,6 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="DDSReader">
-      <HintPath>..\DDSReader.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo.ttf" />
     <Resource Include="Resources\Cursors\grab.cur" />
@@ -137,39 +131,41 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.7" />
     <PackageReference Include="DiffPlex">
       <Version>1.4.1</Version>
     </PackageReference>
     <PackageReference Include="Dragablz">
-      <Version>0.0.3.186</Version>
+      <Version>0.0.3.234</Version>
     </PackageReference>
     <PackageReference Include="gong-wpf-dragdrop">
-      <Version>1.1.0</Version>
+      <Version>3.2.1</Version>
     </PackageReference>
     <PackageReference Include="log4net">
       <Version>2.0.8</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro">
-      <Version>1.5.0</Version>
+      <Version>2.4.10</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro.IconPacks.Entypo">
-      <Version>1.9.0</Version>
+      <Version>4.11.0</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro.Resources">
       <Version>0.6.1</Version>
     </PackageReference>
     <PackageReference Include="MUF">
-      <Version>1.2.1</Version>
+      <Version>2.0.0</Version>
     </PackageReference>
-    <PackageReference Include="MvvmLight">
-      <Version>5.3.0</Version>
-    </PackageReference>
+    <PackageReference Include="MvvmLight" Version="5.4.1.1" />
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.3" />
-    <PackageReference Include="System.Net.Http">
-      <Version>4.3.1</Version>
-    </PackageReference>
+    <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
     <PackageReference Include="Windows7APICodePack-Shell">
       <Version>1.1.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DDSReader">
+      <HintPath>..\DDSReader.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

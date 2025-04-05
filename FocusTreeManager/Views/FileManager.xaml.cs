@@ -25,7 +25,6 @@ namespace FocusTreeManager.Views
                 Column1.Width = new GridLength(0, GridUnitType.Pixel);
                 Column2.Width = new GridLength(0, GridUnitType.Pixel);
                 FileEditor.Visibility = Visibility.Visible;
-                TutorialButton.Visibility = Visibility.Hidden;
             }
         }
 

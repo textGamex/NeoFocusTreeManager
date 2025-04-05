@@ -16,8 +16,9 @@ using System;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Practices.ServiceLocation;
+// using Microsoft.Practices.ServiceLocation;
 using System.Windows;
+using CommonServiceLocator;
 
 namespace FocusTreeManager.ViewModel
 {
