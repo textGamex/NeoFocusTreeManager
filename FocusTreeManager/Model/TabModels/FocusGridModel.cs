@@ -733,12 +733,6 @@ namespace FocusTreeManager.Model.TabModels
                     UndoService.Current[GetUndoRoot()].EndChangeSetBatch();
                     break;
             }
-            if (msg.Target == this)
-            {
-                //Resend to the tutorial View model if this was the target
-                Messenger.Default.Send(new NotificationMessage(msg.Sender,
-                new ViewModelLocator().Tutorial, msg.Notification));
-            }
         }
 
         public void UpdateFocus(FocusModel sender)

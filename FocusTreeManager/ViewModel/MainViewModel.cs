@@ -401,12 +401,6 @@ namespace FocusTreeManager.ViewModel
                 TabsModelList.Remove(Model);
                 RaisePropertyChanged("TabsModelList");
             }
-            if (msg.Target == this)
-            {
-                //Resend to the tutorial View model if this was the target
-                Messenger.Default.Send(new NotificationMessage(msg.Sender,
-                new ViewModelLocator().Tutorial, msg.Notification));
-            }
         }
 
         private void CheckForChanges(ObservableObject container)

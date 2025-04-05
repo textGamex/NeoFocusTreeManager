@@ -16,7 +16,6 @@
     DataContext="{Binding ProjectEditor, Source={StaticResource Locator}}"
     GlowBrush="{DynamicResource AccentColorBrush}"
     Icon="/FocusTreeManager;component/GFX/Focus/goal_unknown.png"
-    Loaded="MetroWindow_Loaded"
     ResizeMode="NoResize"
     SizeToContent="Height"
     WindowStartupLocation="CenterScreen"

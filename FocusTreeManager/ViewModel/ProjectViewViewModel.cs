@@ -273,12 +273,6 @@ namespace FocusTreeManager.ViewModel
                 RaisePropertyChanged(() => Project.eventList);
                 RaisePropertyChanged(() => Project.scriptList);
             }
-            if (msg.Target == this)
-            {
-                //Resend to the tutorial View model if this was the target
-                Messenger.Default.Send(new NotificationMessage(msg.Sender,
-                new ViewModelLocator().Tutorial, msg.Notification));
-            }
         }
 
         #region Undo/Redo

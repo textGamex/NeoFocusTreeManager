@@ -210,7 +210,6 @@
                 Width="400"
                 VerticalAlignment="Center"
                 CloseButtonVisibility="Hidden"
-                ClosingFinished="ProjectFlyout_OnClosingFinished"
                 IsModal="True"
                 IsOpen="True"
                 Position="Left">

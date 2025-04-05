@@ -63,11 +63,5 @@ namespace FocusTreeManager.Views
             }
             Activate();
         }
-
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            //Check Tutorial
-            new ViewModelLocator().Tutorial.StartCommand.RaiseCanExecuteChanged();
-        }
     }
 }

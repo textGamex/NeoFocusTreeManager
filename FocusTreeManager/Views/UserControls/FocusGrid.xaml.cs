@@ -56,8 +56,6 @@ namespace FocusTreeManager.Views.UserControls
             if (MainWindow == null) return;
             MainWindow.KeyDown += FocusGrid_OnKeyDown;
             MainWindow.KeyUp += FocusGrid_OnKeyUp;
-            //Check Tutorial
-            new ViewModelLocator().Tutorial.StartCommand.RaiseCanExecuteChanged();
         }
 
         public void setupInternalFoci()

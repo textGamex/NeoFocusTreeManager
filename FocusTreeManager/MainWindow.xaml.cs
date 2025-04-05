@@ -160,14 +160,6 @@ namespace FocusTreeManager
         {
             ProjectFlyout.IsOpen = true;
             ProjectFlyout.CloseButtonVisibility = Visibility.Visible;
-            Messenger.Default.Send(new NotificationMessage(this,
-                new ViewModelLocator().Tutorial, "OpenedProjectFylout"));
-        }
-
-        private void ProjectFlyout_OnClosingFinished(object sender, RoutedEventArgs e)
-        {
-            Messenger.Default.Send(new NotificationMessage(this,
-                new ViewModelLocator().Tutorial, "ClosedProjectFylout"));
         }
 
         //Drag with the mouse effect
@@ -269,8 +261,6 @@ namespace FocusTreeManager
             {
                 SettingsButton_Click(this, new RoutedEventArgs());
             }
-            //Check Tutorial
-            new ViewModelLocator().Tutorial.StartCommand.RaiseCanExecuteChanged();
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)

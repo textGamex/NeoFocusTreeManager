@@ -104,11 +104,5 @@ namespace FocusTreeManager.Views.UserControls
             FilterKey = ColumnToFilter.Value;
             ((CollectionViewSource)Resources["LocalisationSource"]).View.Refresh();
         }
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            //Check Tutorial
-            new ViewModelLocator().Tutorial.StartCommand.RaiseCanExecuteChanged();
-        }
     }
 }

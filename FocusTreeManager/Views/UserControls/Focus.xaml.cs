@@ -139,8 +139,6 @@ namespace FocusTreeManager.Views.UserControls
             model.PropertyChanged += Focus_PropertyChanged;
             //Image loading async
             StartImageDispatcher();
-            Messenger.Default.Send(new NotificationMessage(this,
-                new ViewModelLocator().Tutorial, "FocusLoaded"));
         }
 
         private void Focus_OnMouseEnter(object sender, MouseEventArgs e)

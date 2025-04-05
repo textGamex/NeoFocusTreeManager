@@ -47,7 +47,6 @@ namespace FocusTreeManager.ViewModel
             SimpleIoc.Default.Register<CodeComparatorViewModel>();
             SimpleIoc.Default.Register<ErrorDawgViewModel>();
             SimpleIoc.Default.Register<StatusBarViewModel>();
-            SimpleIoc.Default.Register<TutorialViewModel>();
             Messenger.Default.Register<NotificationMessage>(this, NotifyUserMethod);
         }
 
@@ -157,14 +156,6 @@ namespace FocusTreeManager.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<StatusBarViewModel>();
-            }
-        }
-
-        public TutorialViewModel Tutorial
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<TutorialViewModel>();
             }
         }
 
