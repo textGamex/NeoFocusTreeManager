@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -13,16 +14,20 @@ namespace FocusTreeManager.ViewModel;
 /// See http://www.galasoft.ch/mvvm
 /// </para>
 /// </summary>
-public sealed class ChangeImageViewModel : ViewModelBase
+public sealed partial class ChangeImageViewModel : ViewModelBase
 {
+    public enum FolderType : byte
+    {
+        Focus,
+        Event
+    }
+
     public sealed class ImageData
     {
         public ImageSource Image { get; set; }
         public string Filename { get; set; }
         public int MaxWidth { get; set; }
     }
-
-    public RelayCommand<string> SelectCommand { get; private set; }
 
     private string _focusImage;
 
@@ -43,21 +48,20 @@ public sealed class ChangeImageViewModel : ViewModelBase
     /// </summary>
     public ChangeImageViewModel()
     {
-        ImageList = new ObservableCollection<ImageData>();
-        SelectCommand = new RelayCommand<string>(SelectFocus);
+        ImageList = [];
     }
 
-    public void LoadImages(string SubFolder, string CurrentImage)
+    public void LoadImages(FolderType folderType, string currentImage)
     {
         int maxWidth;
         Dictionary<string, ImageSource> images;
-        switch (SubFolder)
+        switch (folderType)
         {
-            case "Focus":
+            case FolderType.Focus:
                 maxWidth = 100;
                 images = AsyncImageLoader.AsyncImageLoader.Worker.Focuses;
                 break;
-            case "Event":
+            case FolderType.Event:
                 maxWidth = 250;
                 images = AsyncImageLoader.AsyncImageLoader.Worker.Events;
                 break;
@@ -76,11 +80,12 @@ public sealed class ChangeImageViewModel : ViewModelBase
                 }
             );
         }
-        _focusImage = CurrentImage;
+        _focusImage = currentImage;
         RaisePropertyChanged(() => ImageList);
     }
 
-    public void SelectFocus(string path)
+    [RelayCommand]
+    private void SelectFocus(string path)
     {
         FocusImage = path;
         Messenger.Default.Send(new NotificationMessage(this, "HideChangeImage"));

@@ -4,25 +4,27 @@ using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls;
 using System;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FocusTreeManager.Views;
 
 /// <summary>
 /// Description for ChangeImage.
 /// </summary>
-public partial class ChangeImage : MetroWindow
+public partial class ImagePickerView : MetroWindow
 {
+    public ChangeImageViewModel ViewModel => (ChangeImageViewModel)DataContext;
     /// <summary>
     /// Initializes a new instance of the ChangeImage class.
     /// </summary>
-    public ChangeImage()
+    public ImagePickerView()
     {
         InitializeComponent();
         loadLocales();
         Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
         MaxHeight = SystemParameters.PrimaryScreenHeight * 0.90;
         MaxWidth = SystemParameters.PrimaryScreenWidth * 0.90;
-        DataContext = (new ViewModelLocator()).ChangeImage;
+        DataContext = App.Current.Services.GetRequiredService<ChangeImageViewModel>();
     }
 
     private void NotificationMessageReceived(NotificationMessage msg)

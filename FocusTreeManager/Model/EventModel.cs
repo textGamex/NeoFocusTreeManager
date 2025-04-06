@@ -13,6 +13,7 @@ using System.Linq;
 using System.Windows.Media;
 using FocusTreeManager.Helper;
 using FocusTreeManager.Model.TabModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FocusTreeManager.Model
 {
@@ -370,13 +371,17 @@ namespace FocusTreeManager.Model
                 new ViewModelLocator().Main.SelectedTab, "DeleteEvent"));
         }
 
+        private ImagePickerView? _imagePickerView;
+        
         public void ChangeImage()
         {
-            var view = new ChangeImage();
-            var locator = new ViewModelLocator();
-            locator.ChangeImage.LoadImages("Events", Picture);
-            view.ShowDialog();
-            Picture = locator.ChangeImage.FocusImage;
+            if (_imagePickerView is null)
+            {
+                _imagePickerView = App.Current.Services.GetRequiredService<ImagePickerView>();
+                _imagePickerView!.ViewModel.LoadImages(ChangeImageViewModel.FolderType.Event, Picture);
+            }
+            _imagePickerView.ShowDialog();
+            Picture = _imagePickerView.ViewModel.FocusImage;
         }
 
         public void EditLocale(string param)

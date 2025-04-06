@@ -1,0 +1,53 @@
+﻿<controls:MetroWindow
+    GlowBrush="{DynamicResource AccentColorBrush}"
+    Icon="/FocusTreeManager;component/GFX/Focus/goal_unknown.png"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight"
+    Title="{DynamicResource Chose_Image_Title}"
+    WindowStartupLocation="CenterScreen"
+    d:DataContext="{d:DesignInstance vms:ChangeImageViewModel}"
+    mc:Ignorable="d ignore"
+    x:Class="FocusTreeManager.Views.ImagePickerView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ignore="http://www.galasoft.ch/ignore"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vms="clr-namespace:FocusTreeManager.ViewModel"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/FocusTreeManager;component/Languages/En_en.xaml" x:Name="LocalizationStrings" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding ImageList}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="10">
+                        <Image
+                            MaxWidth="{Binding MaxWidth}"
+                            Source="{Binding Image}"
+                            ToolTip="{Binding Filename}"
+                            x:Name="ImageToChose" />
+                        <Button
+                            Command="{Binding DataContext.SelectFocusCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}"
+                            CommandParameter="{Binding Filename}"
+                            Content="{StaticResource Command_Select}"
+                            Height="25"
+                            VerticalAlignment="Bottom"
+                            Width="150" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</controls:MetroWindow>
