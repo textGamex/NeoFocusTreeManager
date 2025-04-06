@@ -1,8 +1,7 @@
-﻿namespace FocusTreeManager.CodeStructures.CodeExceptions
+﻿namespace FocusTreeManager.CodeStructures.CodeExceptions;
+
+internal class StringLiteralException : PotentiallySafeException
 {
-    internal class StringLiteralException : PotentiallySafeException
-    {
-        public override string Message => "No closing quotation mark was found, " + 
-                                          "all string literal must be closed.";
-    }
+    public override string Message => "No closing quotation mark was found, " + 
+                                      "all string literal must be closed.";
 }

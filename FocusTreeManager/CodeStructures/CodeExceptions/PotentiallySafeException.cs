@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace FocusTreeManager.CodeStructures.CodeExceptions
+namespace FocusTreeManager.CodeStructures.CodeExceptions;
+
+public class PotentiallySafeException : Exception
 {
-    public class PotentiallySafeException : Exception
-    {
-        public bool isSafe = false;
-    }
+    public bool isSafe = false;
 }

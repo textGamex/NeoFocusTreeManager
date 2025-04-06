@@ -5,199 +5,197 @@ using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
-using System.Windows;
 using FocusTreeManager.Helper;
 
-namespace FocusTreeManager.Model
+namespace FocusTreeManager.Model;
+
+public class AssignationModel : ObservableObject, ICloneable
 {
-    public class AssignationModel : ObservableObject, ICloneable
+    public string Text
     {
-        public string Text
+        get
         {
-            get
-            {
-                return LocalizationHelper.getValueForKey(LocalizationKey);
-            }
+            return LocalizationHelper.getValueForKey(LocalizationKey);
         }
+    }
 
-        private string localizationKey;
+    private string localizationKey;
 
-        public string LocalizationKey
+    public string LocalizationKey
+    {
+        get
         {
-            get
-            {
-                return localizationKey;
-            }
-            set
-            {
-                Set(() => LocalizationKey, ref localizationKey, value);
-            }
+            return localizationKey;
         }
-
-        private Brush color;
-
-        public Brush Color
+        set
         {
-            get
-            {
-                return color;
-            }
-            set
-            {
-                Set(() => Color, ref color, value);
-            }
+            Set(() => LocalizationKey, ref localizationKey, value);
         }
+    }
 
-        private Brush borderColor;
+    private Brush color;
 
-        public Brush BorderColor
+    public Brush Color
+    {
+        get
         {
-            get
-            {
-                return borderColor;
-            }
-            set
-            {
-                Set(() => BorderColor, ref borderColor, value);
-            }
+            return color;
         }
-
-        private Brush backgroundColor;
-
-        public Brush BackgroundColor
+        set
         {
-            get
-            {
-                return backgroundColor;
-            }
-            set
-            {
-                Set(() => BackgroundColor, ref backgroundColor, value);
-            }
+            Set(() => Color, ref color, value);
         }
+    }
 
-        private bool isNotEditable;
+    private Brush borderColor;
 
-        public bool IsNotEditable
+    public Brush BorderColor
+    {
+        get
         {
-            get
-            {
-                return isNotEditable;
-            }
-            set
-            {
-                Set(() => IsNotEditable, ref isNotEditable, value);
-            }
+            return borderColor;
         }
-
-        private bool canHaveChild;
-
-        public bool CanHaveChild
+        set
         {
-            get
-            {
-                return canHaveChild;
-            }
-            set
-            {
-                Set(() => CanHaveChild, ref canHaveChild, value);
-            }
+            Set(() => BorderColor, ref borderColor, value);
         }
+    }
 
-        private bool isCloned;
+    private Brush backgroundColor;
 
-        public bool IsCloned
+    public Brush BackgroundColor
+    {
+        get
         {
-            get
-            {
-                return isCloned;
-            }
-            set
-            {
-                Set(() => IsCloned, ref isCloned, value);
-            }
+            return backgroundColor;
         }
-
-        private bool isExpanded;
-
-        public bool IsExpanded
+        set
         {
-            get
-            {
-                return isExpanded;
-            }
-            set
-            {
-                Set(() => IsExpanded, ref isExpanded, value);
-            }
+            Set(() => BackgroundColor, ref backgroundColor, value);
         }
+    }
 
-        private string code;
+    private bool isNotEditable;
 
-        public string Code
+    public bool IsNotEditable
+    {
+        get
         {
-            get
-            {
-                return code;
-            }
-            set
-            {
-                Set(() => Code, ref code, value);
-            }
+            return isNotEditable;
         }
-
-        private ObservableCollection<AssignationModel> childrens;
-
-        public ObservableCollection<AssignationModel> Childrens
+        set
         {
-            get
+            Set(() => IsNotEditable, ref isNotEditable, value);
+        }
+    }
+
+    private bool canHaveChild;
+
+    public bool CanHaveChild
+    {
+        get
+        {
+            return canHaveChild;
+        }
+        set
+        {
+            Set(() => CanHaveChild, ref canHaveChild, value);
+        }
+    }
+
+    private bool isCloned;
+
+    public bool IsCloned
+    {
+        get
+        {
+            return isCloned;
+        }
+        set
+        {
+            Set(() => IsCloned, ref isCloned, value);
+        }
+    }
+
+    private bool isExpanded;
+
+    public bool IsExpanded
+    {
+        get
+        {
+            return isExpanded;
+        }
+        set
+        {
+            Set(() => IsExpanded, ref isExpanded, value);
+        }
+    }
+
+    private string code;
+
+    public string Code
+    {
+        get
+        {
+            return code;
+        }
+        set
+        {
+            Set(() => Code, ref code, value);
+        }
+    }
+
+    private ObservableCollection<AssignationModel> childrens;
+
+    public ObservableCollection<AssignationModel> Childrens
+    {
+        get
+        {
+            return childrens;
+        }
+        set
+        {
+            if (Equals(value, childrens))
             {
-                return childrens;
+                return;
             }
-            set
-            {
-                if (Equals(value, childrens))
-                {
-                    return;
-                }
-                childrens = value;
-                RaisePropertyChanged(() => Childrens);
-            }
+            childrens = value;
+            RaisePropertyChanged(() => Childrens);
         }
+    }
 
-        public RelayCommand<object> DeleteNodeCommand { get; set; }
+    public RelayCommand<object> DeleteNodeCommand { get; set; }
 
-        public AssignationModel()
+    public AssignationModel()
+    {
+        childrens = new ObservableCollection<AssignationModel>();
+    }
+
+    public AssignationModel(AssignationModel source)
+    {
+        LocalizationKey = source.LocalizationKey;
+        Color = source.Color;
+        BorderColor = source.BorderColor;
+        BackgroundColor = source.BackgroundColor;
+        IsNotEditable = source.IsNotEditable;
+        CanHaveChild = source.CanHaveChild;
+        Code = source.Code;
+        childrens = new ObservableCollection<AssignationModel>();
+    }
+
+    private void ExpanderClick()
+    {
+        Messenger.Default.Send(new NotificationMessage(this, 
+            new ViewModelLocator().Scripter, "ExpanderClick"));
+    }
+
+    public object Clone()
+    {
+        AssignationModel model = new AssignationModel(this) { IsCloned = true };
+        foreach (AssignationModel child in Childrens)
         {
-            childrens = new ObservableCollection<AssignationModel>();
+            model.Childrens.Add((AssignationModel)child.Clone());
         }
-
-        public AssignationModel(AssignationModel source)
-        {
-            LocalizationKey = source.LocalizationKey;
-            Color = source.Color;
-            BorderColor = source.BorderColor;
-            BackgroundColor = source.BackgroundColor;
-            IsNotEditable = source.IsNotEditable;
-            CanHaveChild = source.CanHaveChild;
-            Code = source.Code;
-            childrens = new ObservableCollection<AssignationModel>();
-        }
-
-        private void ExpanderClick()
-        {
-            Messenger.Default.Send(new NotificationMessage(this, 
-                new ViewModelLocator().Scripter, "ExpanderClick"));
-        }
-
-        public object Clone()
-        {
-            AssignationModel model = new AssignationModel(this) { IsCloned = true };
-            foreach (AssignationModel child in Childrens)
-            {
-                model.Childrens.Add((AssignationModel)child.Clone());
-            }
-            return model;
-        }
+        return model;
     }
 }

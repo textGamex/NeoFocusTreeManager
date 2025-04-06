@@ -1,7 +1,6 @@
-﻿namespace FocusTreeManager.Model
+﻿namespace FocusTreeManager.Model;
+
+public interface ISet
 {
-    public interface ISet
-    {
-        void DeleteSetRelations();
-    }
+    void DeleteSetRelations();
 }

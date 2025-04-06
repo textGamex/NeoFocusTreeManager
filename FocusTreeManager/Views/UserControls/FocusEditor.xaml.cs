@@ -3,62 +3,61 @@ using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
 using FocusTreeManager.Helper;
 
-namespace FocusTreeManager.Views.UserControls
+namespace FocusTreeManager.Views.UserControls;
+
+public partial class FocusEditor : UserControl
 {
-    public partial class FocusEditor : UserControl
+    public FocusEditor()
     {
-        public FocusEditor()
+        InitializeComponent();
+        loadLocales();
+        Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
+    }
+
+    private void NotificationMessageReceived(NotificationMessage msg)
+    {
+        if (msg.Notification == "ChangeLanguage")
         {
-            InitializeComponent();
             loadLocales();
-            Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
         }
+    }
 
-        private void NotificationMessageReceived(NotificationMessage msg)
+    private void loadLocales()
+    {
+        Resources.MergedDictionaries.Add(LocalizationHelper.getLocale());
+    }
+
+    private void DescriptionButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (Localizator.Visibility == Visibility.Hidden)
         {
-            if (msg.Notification == "ChangeLanguage")
-            {
-                loadLocales();
-            }
+            Localizator.Hide();
+            Canvas.SetRight(Localizator, -20);
+            Canvas.SetTop(Localizator, Canvas.GetTop(DescriptionButton)
+                                       - DescriptionButton.Height);
+            DescriptionButton.Command.Execute(DescriptionButton.CommandParameter);
+            Localizator.Show();
         }
-
-        private void loadLocales()
+        else 
         {
-            Resources.MergedDictionaries.Add(LocalizationHelper.getLocale());
+            Localizator.Hide();
         }
+    }
 
-        private void DescriptionButton_Click(object sender, RoutedEventArgs e)
+    private void VisibleNameButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (Localizator.Visibility == Visibility.Hidden)
         {
-            if (Localizator.Visibility == Visibility.Hidden)
-            {
-                Localizator.Hide();
-                Canvas.SetRight(Localizator, -20);
-                Canvas.SetTop(Localizator, Canvas.GetTop(DescriptionButton)
-                                           - DescriptionButton.Height);
-                DescriptionButton.Command.Execute(DescriptionButton.CommandParameter);
-                Localizator.Show();
-            }
-            else 
-            {
-                Localizator.Hide();
-            }
+            Localizator.Hide();
+            Canvas.SetRight(Localizator, -20);
+            Canvas.SetTop(Localizator, Canvas.GetTop(VisibleNameButton)
+                                       - VisibleNameButton.Height);
+            VisibleNameButton.Command.Execute(VisibleNameButton.CommandParameter);
+            Localizator.Show();
         }
-
-        private void VisibleNameButton_Click(object sender, RoutedEventArgs e)
+        else 
         {
-            if (Localizator.Visibility == Visibility.Hidden)
-            {
-                Localizator.Hide();
-                Canvas.SetRight(Localizator, -20);
-                Canvas.SetTop(Localizator, Canvas.GetTop(VisibleNameButton)
-                                - VisibleNameButton.Height);
-                VisibleNameButton.Command.Execute(VisibleNameButton.CommandParameter);
-                Localizator.Show();
-            }
-            else 
-            {
-                Localizator.Hide();
-            }
+            Localizator.Hide();
         }
     }
 }

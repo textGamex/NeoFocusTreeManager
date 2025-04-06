@@ -2,7 +2,6 @@ using FocusTreeManager.Helper;
 using FocusTreeManager.ViewModel;
 using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls;
-using System;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 

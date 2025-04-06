@@ -3,100 +3,99 @@ using GalaSoft.MvvmLight;
 using MonitoredUndo;
 using System;
 
-namespace FocusTreeManager.Model
+namespace FocusTreeManager.Model;
+
+public class MutuallyExclusiveSetModel : ObservableObject, 
+    ISupportsUndo, ISet, IEquatable<MutuallyExclusiveSetModel>
 {
-    public class MutuallyExclusiveSetModel : ObservableObject, 
-        ISupportsUndo, ISet, IEquatable<MutuallyExclusiveSetModel>
+    private FocusModel focus1;
+
+    public FocusModel Focus1
     {
-        private FocusModel focus1;
-
-        public FocusModel Focus1
+        get
         {
-            get
-            {
-                return focus1;
-            }
-            set
-            {
-                if (value == focus1)
-                {
-                    return;
-                }
-                DefaultChangeFactory.Current.OnChanging(this,
-                         "Focus1", focus1, value, "Focus1 Changed");
-                focus1 = value;
-                RaisePropertyChanged(() => Focus1);
-            }
+            return focus1;
         }
-
-        private FocusModel focus2;
-
-        public FocusModel Focus2
+        set
         {
-            get
+            if (value == focus1)
             {
-                return focus2;
+                return;
             }
-            set
-            {
-                if (value == focus2)
-                {
-                    return;
-                }
-                DefaultChangeFactory.Current.OnChanging(this,
-                         "Focus2", focus2, value, "Focus2 Changed");
-                focus2 = value;
-                RaisePropertyChanged(() => Focus2);
-            }
+            DefaultChangeFactory.Current.OnChanging(this,
+                "Focus1", focus1, value, "Focus1 Changed");
+            focus1 = value;
+            RaisePropertyChanged(() => Focus1);
         }
+    }
 
-        public MutuallyExclusiveSetModel(FocusModel focus1, FocusModel focus2)
+    private FocusModel focus2;
+
+    public FocusModel Focus2
+    {
+        get
         {
-            //Set leftmost Focus as Focus 1 and rightmost focus as focus 2
-            if (focus1.X < focus2.X)
-            {
-                Focus1 = focus1;
-                Focus2 = focus2;
-            }
-            else if (focus1.X >= focus2.X)
-            {
-                Focus2 = focus1;
-                Focus1 = focus2;
-            }
+            return focus2;
         }
-
-        public void DeleteSetRelations()
+        set
         {
-            Focus1.MutualyExclusive.Remove(this);
-            Focus1 = null;
-            Focus2.MutualyExclusive.Remove(this);
-            Focus2 = null;
+            if (value == focus2)
+            {
+                return;
+            }
+            DefaultChangeFactory.Current.OnChanging(this,
+                "Focus2", focus2, value, "Focus2 Changed");
+            focus2 = value;
+            RaisePropertyChanged(() => Focus2);
         }
+    }
 
-        public bool Equals(MutuallyExclusiveSetModel obj)
+    public MutuallyExclusiveSetModel(FocusModel focus1, FocusModel focus2)
+    {
+        //Set leftmost Focus as Focus 1 and rightmost focus as focus 2
+        if (focus1.X < focus2.X)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-            if (obj.Focus1 == Focus1 && obj.Focus2 == Focus2)
-            {
-                return true;
-            }
-            if (obj.Focus2 == Focus1 && obj.Focus1 == Focus2)
-            {
-                return true;
-            }
+            Focus1 = focus1;
+            Focus2 = focus2;
+        }
+        else if (focus1.X >= focus2.X)
+        {
+            Focus2 = focus1;
+            Focus1 = focus2;
+        }
+    }
+
+    public void DeleteSetRelations()
+    {
+        Focus1.MutualyExclusive.Remove(this);
+        Focus1 = null;
+        Focus2.MutualyExclusive.Remove(this);
+        Focus2 = null;
+    }
+
+    public bool Equals(MutuallyExclusiveSetModel obj)
+    {
+        if (obj == null)
+        {
             return false;
         }
-
-        #region Undo/Redo
-
-        public object GetUndoRoot()
+        if (obj.Focus1 == Focus1 && obj.Focus2 == Focus2)
         {
-            return new ViewModelLocator().Main;
+            return true;
         }
-
-        #endregion
+        if (obj.Focus2 == Focus1 && obj.Focus1 == Focus2)
+        {
+            return true;
+        }
+        return false;
     }
+
+    #region Undo/Redo
+
+    public object GetUndoRoot()
+    {
+        return new ViewModelLocator().Main;
+    }
+
+    #endregion
 }

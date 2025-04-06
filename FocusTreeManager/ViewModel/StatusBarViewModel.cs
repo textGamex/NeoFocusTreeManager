@@ -1,52 +1,49 @@
-﻿using System;
-using System.Windows;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using FocusTreeManager.Helper;
 
-namespace FocusTreeManager.ViewModel
+namespace FocusTreeManager.ViewModel;
+
+/// <summary>
+/// Will receive message to add to the status bar
+/// </summary>
+public class StatusBarViewModel : ViewModelBase
 {
-    /// <summary>
-    /// Will receive message to add to the status bar
-    /// </summary>
-    public class StatusBarViewModel : ViewModelBase
+    private string message;
+
+    public string Message
     {
-        private string message;
-
-        public string Message
+        get
         {
-            get
-            {
-                return message;
-            }
-            set
-            {
-                if (message == value)
-                {
-                    return;
-                }
-                message = value;
-                RaisePropertyChanged(() => Message);
-            }
+            return message;
         }
-
-        public StatusBarViewModel()
+        set
         {
-            Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
-        }
-        
-        private void NotificationMessageReceived(NotificationMessage msg)
-        {
-            //If this is not the intended target
-            if (msg.Target != null && msg.Target != this) return;
-            if (msg.Notification == "Clear_message")
+            if (message == value)
             {
-                Message = "";
                 return;
             }
-            string Notification = LocalizationHelper.getValueForKey(msg.Notification);
-            if (string.IsNullOrEmpty(Notification)) return;
-            Message = Notification;
+            message = value;
+            RaisePropertyChanged(() => Message);
         }
+    }
+
+    public StatusBarViewModel()
+    {
+        Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
+    }
+        
+    private void NotificationMessageReceived(NotificationMessage msg)
+    {
+        //If this is not the intended target
+        if (msg.Target != null && msg.Target != this) return;
+        if (msg.Notification == "Clear_message")
+        {
+            Message = "";
+            return;
+        }
+        string Notification = LocalizationHelper.getValueForKey(msg.Notification);
+        if (string.IsNullOrEmpty(Notification)) return;
+        Message = Notification;
     }
 }

@@ -3,42 +3,41 @@ using System.Linq;
 using System.Text;
 using FocusTreeManager.CodeStructures.CodeExceptions;
 
-namespace FocusTreeManager.CodeStructures
+namespace FocusTreeManager.CodeStructures;
+
+public class ScriptErrorLogger
 {
-    public class ScriptErrorLogger
+    public List<SyntaxError> Errors { get; set; }
+
+    public ScriptErrorLogger()
     {
-        public List<SyntaxError> Errors { get; set; }
+        Errors = new List<SyntaxError>();
+    }
 
-        public ScriptErrorLogger()
-        {
-            Errors = new List<SyntaxError>();
-        }
+    public bool hasErrors()
+    {
+        return Errors.Any(e => !e.isSafe);
+    }
 
-        public bool hasErrors()
-        {
-            return Errors.Any(e => !e.isSafe);
-        }
+    public bool hasErrorsAndSafeErrors()
+    {
+        return Errors.Any();
+    }
 
-        public bool hasErrorsAndSafeErrors()
-        {
-            return Errors.Any();
-        }
+    public List<SyntaxError> getErrors()
+    {
+        List<SyntaxError> newlist = Errors.ToList();
+        Errors.Clear();
+        return newlist;
+    }
 
-        public List<SyntaxError> getErrors()
+    public string ErrorsToString()
+    {
+        StringBuilder builder = new StringBuilder();
+        foreach (SyntaxError error in Errors)
         {
-            List<SyntaxError> newlist = Errors.ToList();
-            Errors.Clear();
-            return newlist;
+            builder.AppendLine(error.Message);
         }
-
-        public string ErrorsToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach (SyntaxError error in Errors)
-            {
-                builder.AppendLine(error.Message);
-            }
-            return builder.ToString();
-        }
+        return builder.ToString();
     }
 }
