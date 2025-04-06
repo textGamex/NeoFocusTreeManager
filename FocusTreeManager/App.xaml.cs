@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.ExceptionServices;
 using System.Windows;
 using FocusTreeManager.Helper;
@@ -38,6 +38,7 @@ public partial class App : Application
 
         services.AddTransient<ImagePickerView>();
         services.AddTransient<ChangeImageViewModel>();
+        services.AddTransient<AboutView>();
         
         return services.BuildServiceProvider();
     }

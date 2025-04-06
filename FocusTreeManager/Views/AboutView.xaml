@@ -1,0 +1,17 @@
+﻿<Window
+    x:Class="FocusTreeManager.Views.AboutView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FocusTreeManager.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="AboutView"
+    Width="400"
+    Height="250"
+    ResizeMode="NoResize"
+    mc:Ignorable="d">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock FontSize="16" Text="作者: textGamex" />
+        <TextBlock FontSize="16" Text="原作者: Minivera" />
+    </StackPanel>
+</Window>

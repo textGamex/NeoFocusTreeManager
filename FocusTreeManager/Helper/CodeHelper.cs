@@ -10,7 +10,6 @@ public class CodeHelper
     /// </summary>
     public static int GetLineCount(string text)
     {
-        //TODO: 优化 SearchValues
         return text.Count(t => t == '\n');
     }
 

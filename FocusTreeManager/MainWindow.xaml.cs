@@ -1,4 +1,4 @@
-﻿using FocusTreeManager.ViewModel;
+using FocusTreeManager.ViewModel;
 using FocusTreeManager.Views;
 using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls;
@@ -16,7 +16,9 @@ using System.IO;
 using FocusTreeManager.Helper;
 using Dragablz;
 using FocusTreeManager.Model.TabModels;
+using Microsoft.Extensions.DependencyInjection;
 using FocusGrid = FocusTreeManager.Views.UserControls.FocusGrid;
+using Path = System.IO.Path;
 
 namespace FocusTreeManager;
 
@@ -130,7 +132,7 @@ public partial class MainWindow : MetroWindow
     private async void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
         Settings view = new Settings();
-        if (!Directory.Exists(Configurator.getGamePath() + @"\gfx\interface\"))
+        if (!Directory.Exists(Path.Combine(Configurator.getGamePath(), "gfx", "interface")))
         {
             MessageDialogResult result = await ShowWrongGameFolderDialog();
             if (result == MessageDialogResult.Affirmative)
@@ -257,7 +259,7 @@ public partial class MainWindow : MetroWindow
                 }
             }
         }
-        if (!Directory.Exists(Configurator.getGamePath() + @"\gfx\interface\"))
+        if (!Directory.Exists(Path.Combine(Configurator.getGamePath(), "gfx", "interface")))
         {
             SettingsButton_Click(this, new RoutedEventArgs());
         }
@@ -282,5 +284,11 @@ public partial class MainWindow : MetroWindow
         {
             ((FocusGridModel)grid.DataContext).AddGridCells(RowsToAdd, ColumnsToAdd);
         }
+    }
+
+    private void ShowAboutView_OnClick(object sender, RoutedEventArgs e)
+    {
+        var view = App.Current.Services.GetRequiredService<AboutView>();
+        view.ShowDialog();
     }
 }
