@@ -43,8 +43,8 @@ namespace FocusTreeManager.AsyncImageLoader
 
         private void StarterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Focuses = ImageHelper.findAllGameImages(ImageType.Goal);
-            Events = ImageHelper.findAllGameImages(ImageType.Event);
+            Focuses = ImageHelper.FindAllGameImages(ImageType.Goal);
+            Events = ImageHelper.FindAllGameImages(ImageType.Event);
         }
 
         private void ModWorker_DoWork(object sender, DoWorkEventArgs e)

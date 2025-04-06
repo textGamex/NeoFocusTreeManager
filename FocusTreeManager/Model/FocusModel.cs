@@ -41,7 +41,7 @@ namespace FocusTreeManager.Model
             }
         }
 
-        public ImageSource Icon => ImageHelper.getImageFromGame(image, ImageType.Goal);
+        public ImageSource Icon => ImageHelper.GetImageFromGame(image, ImageType.Goal);
 
         private string uniquename;
 

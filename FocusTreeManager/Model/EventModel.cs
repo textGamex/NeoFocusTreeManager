@@ -104,7 +104,7 @@ namespace FocusTreeManager.Model
             }
         }
 
-        public ImageSource ImagePath => ImageHelper.getImageFromGame(picture, ImageType.Event);
+        public ImageSource ImagePath => ImageHelper.GetImageFromGame(picture, ImageType.Event);
 
         private bool isMajor;
 
