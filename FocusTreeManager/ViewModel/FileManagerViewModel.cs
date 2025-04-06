@@ -1,14 +1,14 @@
-﻿using FocusTreeManager.CodeStructures;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using FocusTreeManager.Model.TabModels;
+using FocusTreeManager.CodeStructures;
 using FocusTreeManager.Helper;
+using FocusTreeManager.Model.TabModels;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 
 namespace FocusTreeManager.ViewModel;
 
@@ -20,10 +20,7 @@ public class FileManagerViewModel : ViewModelBase
 
     public ObservableObject File
     {
-        get
-        {
-            return file;
-        }
+        get { return file; }
         set
         {
             if (value == file)
@@ -57,23 +54,16 @@ public class FileManagerViewModel : ViewModelBase
         File = null;
         try
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            var dialog = new OpenFileDialog
             {
                 Title = LocalizationHelper.getValueForKey("Add_Game_File"),
                 InitialDirectory = Configurator.getGamePath(),
-                AddToMostRecentlyUsedList = false,
-                AllowNonFileSystemItems = false,
                 DefaultDirectory = "C:",
-                EnsureFileExists = true,
-                EnsurePathExists = true,
-                EnsureReadOnly = false,
-                EnsureValidNames = true
+                Filter = "Focus Tree (*.txt)|*.txt|Localization (*.yml)|*.yml|All files (*.*)|*.*",
+                Multiselect = false
             };
-            dialog.Filters.Add(new CommonFileDialogFilter("Scripts", "*.txt"));
-            dialog.Filters.Add(new CommonFileDialogFilter("Localization", "*.yml"));
-            dialog.Filters.Add(new CommonFileDialogFilter("All", "*.*"));
-            dialog.Multiselect = false;
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+
+            if (dialog.ShowDialog() == true)
             {
                 //check if the file is a .yaml file
                 if (Path.GetExtension(dialog.FileName) == ".yml")
@@ -86,7 +76,7 @@ public class FileManagerViewModel : ViewModelBase
                     };
                 }
                 else
-                { 
+                {
                     string contents = System.IO.File.ReadAllText(dialog.FileName);
                     Script script = new Script();
                     script.Analyse(contents);
@@ -111,8 +101,7 @@ public class FileManagerViewModel : ViewModelBase
                         //If a focus tree
                         if (script.FindAssignation("focus_tree") != null)
                         {
-                            File = Parsers.FocusTreeParser.CreateTreeFromScript(dialog.FileName,
-                                script);
+                            File = Parsers.FocusTreeParser.CreateTreeFromScript(dialog.FileName, script);
                             ((FocusGridModel)File).FileInfo = new DataContract.FileInfo
                             {
                                 Filename = dialog.FileName,
@@ -120,11 +109,12 @@ public class FileManagerViewModel : ViewModelBase
                             };
                         }
                         //If an event file
-                        else if (script.FindAssignation("country_event") != null ||
-                                 script.FindAssignation("news_event") != null)
+                        else if (
+                            script.FindAssignation("country_event") != null
+                            || script.FindAssignation("news_event") != null
+                        )
                         {
-                            File = Parsers.EventParser.CreateEventFromScript(dialog.FileName,
-                                script);
+                            File = Parsers.EventParser.CreateEventFromScript(dialog.FileName, script);
                             ((EventTabModel)File).FileInfo = new DataContract.FileInfo
                             {
                                 Filename = dialog.FileName,

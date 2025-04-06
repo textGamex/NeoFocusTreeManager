@@ -1,186 +1,171 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <OutputType>WinExe</OutputType>
-    <WarningLevel>4</WarningLevel>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publier\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+	<TargetFramework>net9.0-windows</TargetFramework>
+	<OutputType>WinExe</OutputType>
+	<IsWebBootstrapper>false</IsWebBootstrapper>
+	<PublishUrl>publier\</PublishUrl>
+	<MapFileExtensions>true</MapFileExtensions>
+	<UseApplicationTrust>false</UseApplicationTrust>
+	<BootstrapperEnabled>true</BootstrapperEnabled>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	 <!-- 在较老版本的 Windows 上运行，需要设置CETCompat为false, 见 https://github.com/dotnet/runtime/issues/110000 -->
+	 <CETCompat>false</CETCompat>
+	<UseWPF>true</UseWPF>
+	<ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+	 <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <WarningLevel>0</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
+	
+  <PropertyGroup>
+	<StartupObject>FocusTreeManager.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>FocusTreeManager.App</StartupObject>
+	<ApplicationIcon>goal_unknown.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>goal_unknown.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Resource Include="Resources\Entypo.ttf" />
-    <Resource Include="Resources\Cursors\grab.cur" />
-    <Resource Include="Resources\Cursors\grabbing.cur" />
-    <AppDesigner Include="Properties\" />
-    <Content Include="GFX\Focus\goal_unknown.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Resource Include="Resources\Entypo.ttf" />
+	<Resource Include="Resources\Cursors\grab.cur" />
+	<Resource Include="Resources\Cursors\grabbing.cur" />
+	<AppDesigner Include="Properties\" />
+	<Content Include="GFX\Focus\goal_unknown.png">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GFX\Interface\Focus_under.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Content Include="GFX\Interface\Focus_under.png">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+	<BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+	  <Visible>False</Visible>
+	  <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+	  <Install>true</Install>
+	</BootstrapperPackage>
+	<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+	  <Visible>False</Visible>
+	  <ProductName>.NET Framework 3.5 SP1</ProductName>
+	  <Install>false</Install>
+	</BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="goal_unknown.ico" />
+	<Resource Include="goal_unknown.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Licence.txt" />
+	<Resource Include="Licence.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Changelog.txt" />
+	<Resource Include="Changelog.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GFX\Interface\thisisdog.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Content Include="GFX\Interface\thisisdog.png">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Common\EditorData\Autocomplete\Commands.xml" />
-    <Resource Include="Common\EditorData\Autocomplete\UniqueCommands.xml" />
-    <Resource Include="Common\EditorData\Snippets\Commands.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+	<Resource Include="Common\EditorData\Autocomplete\Commands.xml" />
+	<Resource Include="Common\EditorData\Autocomplete\UniqueCommands.xml" />
+	<Resource Include="Common\EditorData\Snippets\Commands.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Entypo-license.txt" />
-    <Resource Include="Resources\WindowsIcons-license.txt" />
-    <Resource Include="Common\EditorData\Snippets\TAGS.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Common\EditorData\Autocomplete\Scope.xml" />
-    <Resource Include="Common\EditorData\Snippets\Scope.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Common\EditorData\Autocomplete\Conditions.xml" />
-    <Resource Include="Common\EditorData\Snippets\Conditions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Common\ScripterControls\FocusTree.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Resource Include="Resources\Entypo-license.txt" />
+	<Resource Include="Resources\WindowsIcons-license.txt" />
+	<Resource Include="Common\EditorData\Snippets\TAGS.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Resource Include="Common\EditorData\Autocomplete\Scope.xml" />
+	<Resource Include="Common\EditorData\Snippets\Scope.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Resource Include="Common\EditorData\Autocomplete\Conditions.xml" />
+	<Resource Include="Common\EditorData\Snippets\Conditions.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Content Include="Common\ScripterControls\FocusTree.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Common\ScripterControls\EventOption.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Content Include="Common\ScripterControls\EventOption.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Common\ScripterControls\Event.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Content Include="Common\ScripterControls\Event.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Common\ScripterControls\EventDescription.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Content Include="Common\ScripterControls\EventDescription.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Common\ScripterControls\Generic.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+	<Content Include="Common\ScripterControls\Generic.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Common\EditorData\Snippets\States.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Common\Tutorials\DefaultTutorial.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
+	<Resource Include="Common\EditorData\Snippets\States.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Content Include="Common\Tutorials\DefaultTutorial.xml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  <SubType>Designer</SubType>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommonServiceLocator" Version="2.0.7" />
-    <PackageReference Include="CommunityToolkit.Mvvm">
-      <Version>8.4.0</Version>
-    </PackageReference>
-    <PackageReference Include="DiffPlex">
-      <Version>1.7.2</Version>
-    </PackageReference>
-    <PackageReference Include="Dragablz">
-      <Version>0.0.3.234</Version>
-    </PackageReference>
-    <PackageReference Include="gong-wpf-dragdrop">
-      <Version>4.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="log4net">
-      <Version>3.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="MahApps.Metro">
-      <Version>2.4.10</Version>
-    </PackageReference>
-    <PackageReference Include="MahApps.Metro.IconPacks.Entypo">
-      <Version>5.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
-      <Version>9.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="MUF">
-      <Version>2.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="MvvmLight" Version="5.4.1.1" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
-    <PackageReference Include="Fody" Version="6.9.2">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="MethodTimer.Fody" Version="3.2.3">
-	    <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Windows7APICodePack-Shell">
-      <Version>1.1.0</Version>
-    </PackageReference>
+	<PackageReference Include="CommonServiceLocator" Version="2.0.7" />
+	<PackageReference Include="CommunityToolkit.Mvvm">
+	  <Version>8.4.0</Version>
+	</PackageReference>
+	<PackageReference Include="DiffPlex">
+	  <Version>1.7.2</Version>
+	</PackageReference>
+	<PackageReference Include="Dragablz">
+	  <Version>0.0.3.234</Version>
+	</PackageReference>
+	<PackageReference Include="gong-wpf-dragdrop">
+	  <Version>4.0.0</Version>
+	</PackageReference>
+	<PackageReference Include="log4net">
+	  <Version>3.0.4</Version>
+	</PackageReference>
+	<PackageReference Include="MahApps.Metro">
+	  <Version>2.4.10</Version>
+	</PackageReference>
+	<PackageReference Include="MahApps.Metro.IconPacks.Entypo">
+	  <Version>5.1.0</Version>
+	</PackageReference>
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection">
+	  <Version>9.0.3</Version>
+	</PackageReference>
+	<PackageReference Include="MUF">
+	  <Version>2.0.0</Version>
+	</PackageReference>
+	<PackageReference Include="MvvmLight" Version="5.4.1.1" />
+	<PackageReference Include="System.ComponentModel.Composition" Version="9.0.3" />
+	<PackageReference Include="System.Drawing.Common" Version="9.0.3" />
+	<PackageReference Include="Fody" Version="6.9.2">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="MethodTimer.Fody" Version="3.2.3">
+		<PrivateAssets>all</PrivateAssets>
+	</PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="DDSReader">
-      <HintPath>..\DDSReader.dll</HintPath>
-    </Reference>
+	<Reference Include="DDSReader">
+	  <HintPath>..\DDSReader.dll</HintPath>
+	</Reference>
   </ItemGroup>
   <ItemGroup>
-    <Page Remove="Languages\Fr_fr.xaml" />
-    <Page Remove="Languages\Fr_fr_Tutorial.xaml" />
-    <Page Remove="Languages\ru_ru.xaml" />
+	<Page Remove="Languages\Fr_fr.xaml" />
+	<Page Remove="Languages\Fr_fr_Tutorial.xaml" />
+	<Page Remove="Languages\ru_ru.xaml" />
   </ItemGroup>
 </Project>

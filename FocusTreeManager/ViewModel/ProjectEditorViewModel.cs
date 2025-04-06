@@ -1,24 +1,20 @@
-﻿using System;
+using System;
 using System.Windows;
+using FocusTreeManager.Helper;
 using FocusTreeManager.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using FocusTreeManager.Helper;
+using Microsoft.Win32;
 
 namespace FocusTreeManager.ViewModel;
 
 public class ProjectEditorViewModel : ViewModelBase
 {
-
     private ProjectModel project;
 
     public ProjectModel Project
     {
-        get
-        {
-            return project;
-        }
+        get { return project; }
         set
         {
             if (value == project)
@@ -34,10 +30,7 @@ public class ProjectEditorViewModel : ViewModelBase
 
     public string SelectedString
     {
-        get
-        {
-            return selectedString;
-        }
+        get { return selectedString; }
         set
         {
             selectedString = value;
@@ -55,7 +48,7 @@ public class ProjectEditorViewModel : ViewModelBase
 
     public RelayCommand WindowClosingCommand { get; set; }
 
-    public bool Accepted { get; set; }      
+    public bool Accepted { get; set; }
 
     public ProjectEditorViewModel()
     {
@@ -82,30 +75,23 @@ public class ProjectEditorViewModel : ViewModelBase
 
     public void WindowClosing()
     {
-        if (Accepted) return;
+        if (Accepted)
+            return;
         Project = null;
     }
 
     public void AddModFolder()
     {
-        CommonOpenFileDialog dialog = new CommonOpenFileDialog
+        var dialog = new OpenFolderDialog()
         {
             Title = LocalizationHelper.getValueForKey("Game_Path_Title"),
-            IsFolderPicker = true,
-            InitialDirectory = Environment.GetFolderPath(Environment.
-                SpecialFolder.MyDocuments),
-            AddToMostRecentlyUsedList = false,
-            AllowNonFileSystemItems = false,
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             DefaultDirectory = "C:",
-            EnsureFileExists = true,
-            EnsurePathExists = true,
-            EnsureReadOnly = false,
-            EnsureValidNames = true,
             Multiselect = false
         };
-        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+        if (dialog.ShowDialog() == true)
         {
-            Project.ListModFolders.Add(dialog.FileName);
+            Project.ListModFolders.Add(dialog.FolderName);
             AsyncImageLoader.AsyncImageLoader.Worker.RefreshFromMods();
         }
         Activate();

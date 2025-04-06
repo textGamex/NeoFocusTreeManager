@@ -1,11 +1,11 @@
-﻿using FocusTreeManager.Helper;
+using FocusTreeManager.Helper;
 using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.Win32;
 
 namespace FocusTreeManager.Views;
 
@@ -33,21 +33,15 @@ public partial class ProjectEditor : MetroWindow
 
     private void TextBox_GotFocus(object sender, RoutedEventArgs e)
     {
-        CommonOpenFileDialog dialog = new CommonOpenFileDialog
+        var dialog = new OpenFileDialog
         {
             Title = LocalizationHelper.getValueForKey("Project_Select"),
             InitialDirectory = "C:",
-            AddToMostRecentlyUsedList = false,
-            AllowNonFileSystemItems = false,
             DefaultDirectory = "C:",
-            EnsureFileExists = false,
-            EnsurePathExists = true,
-            EnsureReadOnly = false,
-            EnsureValidNames = true
+            Filter = "Project (*.xh4prj)|*.xh4prj",
+            Multiselect = false
         };
-        dialog.Filters.Add(new CommonFileDialogFilter("Project", "*.xh4prj"));
-        dialog.Multiselect = false;
-        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+        if (dialog.ShowDialog() == true)
         {
             string filename = dialog.FileName;
             if (string.IsNullOrEmpty(Path.GetExtension(filename)))
@@ -55,7 +49,7 @@ public partial class ProjectEditor : MetroWindow
                 filename += ".xh4prj";
             }
             ((TextBox)sender).Text = filename;
-            BindingExpression bindingExpression = ((TextBox)sender)
+            var bindingExpression = ((TextBox)sender)
                 .GetBindingExpression(TextBox.TextProperty);
             bindingExpression?.UpdateSource();
         }

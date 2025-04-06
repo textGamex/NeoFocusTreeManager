@@ -1,11 +1,11 @@
-﻿using FocusTreeManager.Helper;
+using FocusTreeManager.Helper;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Microsoft.Win32;
 
 namespace FocusTreeManager.ViewModel;
 
@@ -88,23 +88,16 @@ public class SettingsViewModel : ViewModelBase
 
     public void SelectGameFolder()
     {
-        CommonOpenFileDialog dialog = new CommonOpenFileDialog
+        var dialog = new OpenFolderDialog()
         {
             Title = LocalizationHelper.getValueForKey("Game_Path_Title"),
-            IsFolderPicker = true,
             InitialDirectory = "C:",
-            AddToMostRecentlyUsedList = false,
-            AllowNonFileSystemItems = false,
             DefaultDirectory = "C:",
-            EnsureFileExists = true,
-            EnsurePathExists = true,
-            EnsureReadOnly = false,
-            EnsureValidNames = true,
             Multiselect = false
         };
-        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+        if (dialog.ShowDialog() == true)
         {
-            GamePath = dialog.FileName;
+            GamePath = dialog.FolderName;
         }
         Activate();
     }

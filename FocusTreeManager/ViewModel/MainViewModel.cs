@@ -1,20 +1,20 @@
-using FocusTreeManager.DataContract;
-using FocusTreeManager.Model;
-using FocusTreeManager.Views;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using MonitoredUndo;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using FocusTreeManager.Model.TabModels;
+using FocusTreeManager.DataContract;
 using FocusTreeManager.Helper;
+using FocusTreeManager.Model;
+using FocusTreeManager.Model.TabModels;
+using FocusTreeManager.Views;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using MonitoredUndo;
 
 namespace FocusTreeManager.ViewModel;
 
@@ -26,10 +26,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
 
     public bool IsProjectExist
     {
-        get
-        {
-            return isProjectExist;
-        }
+        get { return isProjectExist; }
         set
         {
             isProjectExist = value;
@@ -41,10 +38,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
 
     public ProjectModel Project
     {
-        get
-        {
-            return project;
-        }
+        get { return project; }
         set
         {
             project = value;
@@ -61,7 +55,8 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         get { return selectedTab; }
         set
         {
-            if (value == selectedTab) return;
+            if (value == selectedTab)
+                return;
             selectedTab = value;
             if (selectedTab is FocusGridModel)
             {
@@ -103,7 +98,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
     }
 
-    async private void checkBeforeContinuing(string command)
+    private async void checkBeforeContinuing(string command)
     {
         if (isProjectExist)
         {
@@ -113,8 +108,13 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
             settings.AffirmativeButtonText = LocalizationHelper.getValueForKey("Command_Save");
             settings.NegativeButtonText = LocalizationHelper.getValueForKey("Command_Cancel");
             settings.FirstAuxiliaryButtonText = LocalizationHelper.getValueForKey("Command_Continue");
-            MessageDialogResult Result = await coordinator.ShowMessageAsync(this, Title, Message,
-                MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, settings);
+            MessageDialogResult Result = await coordinator.ShowMessageAsync(
+                this,
+                Title,
+                Message,
+                MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary,
+                settings
+            );
             if (Result == MessageDialogResult.Affirmative)
             {
                 saveProject();
@@ -152,13 +152,14 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         }
     }
 
-    async private void newProject()
+    private async void newProject()
     {
         var Vm = (new ViewModelLocator()).ProjectEditor;
         ProjectEditor dialog = new ProjectEditor();
         Vm.Project = new ProjectModel();
         dialog.ShowDialog();
-        if (Vm.Project == null) return;
+        if (Vm.Project == null)
+            return;
         //Check if the files already exists, if yes, show a message
         if (File.Exists(Vm.Project.Filename))
         {
@@ -171,8 +172,9 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         }
         Project = Vm.Project;
         IsProjectExist = true;
-        Messenger.Default.Send(new NotificationMessage(this, (new ViewModelLocator()).ProjectView,
-            "RefreshProjectViewer"));
+        Messenger.Default.Send(
+            new NotificationMessage(this, (new ViewModelLocator()).ProjectView, "RefreshProjectViewer")
+        );
         Messenger.Default.Send(new NotificationMessage(this, "RefreshTabViewer"));
         Messenger.Default.Send(new NotificationMessage(this, "HideProjectControl"));
         RaisePropertyChanged(() => IsProjectExist);
@@ -191,15 +193,20 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         }
     }
 
-    async private Task<MessageDialogResult> ShowProjectExistDialog()
+    private async Task<MessageDialogResult> ShowProjectExistDialog()
     {
         string Title = LocalizationHelper.getValueForKey("Application_Project_Exists_Header");
         string Message = LocalizationHelper.getValueForKey("Application_Project_Exists");
         MetroDialogSettings settings = new MetroDialogSettings();
         settings.AffirmativeButtonText = LocalizationHelper.getValueForKey("Command_Yes");
         settings.NegativeButtonText = LocalizationHelper.getValueForKey("Command_No");
-        return await coordinator.ShowMessageAsync(this, Title, Message,
-            MessageDialogStyle.AffirmativeAndNegative, settings);
+        return await coordinator.ShowMessageAsync(
+            this,
+            Title,
+            Message,
+            MessageDialogStyle.AffirmativeAndNegative,
+            settings
+        );
     }
 
     public void editProject()
@@ -216,19 +223,15 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
     {
         try
         {
-            var dialog = new CommonOpenFileDialog();
-            dialog.Title = LocalizationHelper.getValueForKey("Project_Load");
-            dialog.InitialDirectory = "C:";
-            dialog.AddToMostRecentlyUsedList = false;
-            dialog.AllowNonFileSystemItems = false;
-            dialog.DefaultDirectory = "C:";
-            dialog.EnsureFileExists = true;
-            dialog.EnsurePathExists = true;
-            dialog.EnsureReadOnly = false;
-            dialog.EnsureValidNames = true;
-            dialog.Filters.Add(new CommonFileDialogFilter("Project", "*.xh4prj"));
-            dialog.Multiselect = false;
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            var dialog = new OpenFileDialog
+            {
+                Title = LocalizationHelper.getValueForKey("Project_Load"),
+                InitialDirectory = "C:",
+                DefaultDirectory = "C:",
+                Filter = "Project|*.xh4prj",
+                Multiselect = false
+            };
+            if (dialog.ShowDialog() == true)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 LoadProject(dialog.FileName);
@@ -265,8 +268,9 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         TabsModelList = new ObservableCollection<ObservableObject>();
         RaisePropertyChanged(() => TabsModelList);
         IsProjectExist = true;
-        Messenger.Default.Send(new NotificationMessage(this, (new ViewModelLocator()).ProjectView,
-            "RefreshProjectViewer"));
+        Messenger.Default.Send(
+            new NotificationMessage(this, (new ViewModelLocator()).ProjectView, "RefreshProjectViewer")
+        );
         Messenger.Default.Send(new NotificationMessage(this, "RefreshTabViewer"));
         Messenger.Default.Send(new NotificationMessage(this, "HideProjectControl"));
         UndoService.Current[this].Clear();
@@ -300,23 +304,21 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
     {
         try
         {
-            var dialog = new CommonOpenFileDialog();
+            var dialog = new OpenFileDialog();
             dialog.Title = LocalizationHelper.getValueForKey("Project_Save");
-            dialog.InitialDirectory = string.IsNullOrEmpty(DataHolder.Instance.Project.filename) ? "C:" 
+            dialog.InitialDirectory = string.IsNullOrEmpty(DataHolder.Instance.Project.filename)
+                ? "C:"
                 : DataHolder.Instance.Project.filename;
-            dialog.AddToMostRecentlyUsedList = false;
-            dialog.AllowNonFileSystemItems = false;
             dialog.DefaultDirectory = "C:";
-            dialog.EnsureFileExists = false;
-            dialog.EnsurePathExists = true;
-            dialog.EnsureReadOnly = false;
-            dialog.EnsureValidNames = true;
-            dialog.Filters.Add(new CommonFileDialogFilter("Project", "*.xh4prj"));
+            dialog.Filter = "Project|*.xh4prj";
             dialog.Multiselect = false;
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog() == true)
             {
-                Project.Filename = Path.Combine(Path.GetDirectoryName(dialog.FileName),
-                    Path.GetFileNameWithoutExtension(dialog.FileName)) + ".xh4prj";
+                Project.Filename =
+                    $"{Path.Combine(
+                        Path.GetDirectoryName(dialog.FileName),
+                        Path.GetFileNameWithoutExtension(dialog.FileName)
+                    )}.xh4prj";
                 DataHolder.Instance.SaveContract(Project);
             }
             Messenger.Default.Send(new NotificationMessage(this, "HideProjectControl"));
@@ -332,11 +334,13 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
     private void NotificationMessageReceived(NotificationMessage msg)
     {
         //If this is not the intended target
-        if (msg.Target != null && msg.Target != this) return;
+        if (msg.Target != null && msg.Target != this)
+            return;
         if (msg.Notification == "OpenFocusTree")
         {
             FocusGridModel container = msg.Sender as FocusGridModel;
-            if (TabsModelList.Contains(container)) return;
+            if (TabsModelList.Contains(container))
+                return;
             CheckForChanges(container);
             TabsModelList.Add(container);
             RaisePropertyChanged("TabsModelList");
@@ -344,7 +348,8 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         if (msg.Notification == "OpenLocalisation")
         {
             LocalisationModel container = msg.Sender as LocalisationModel;
-            if (TabsModelList.Contains(container)) return;
+            if (TabsModelList.Contains(container))
+                return;
             CheckForChanges(container);
             TabsModelList.Add(container);
             RaisePropertyChanged("TabsModelList");
@@ -352,7 +357,8 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         if (msg.Notification == "OpenEventList")
         {
             EventTabModel container = msg.Sender as EventTabModel;
-            if (TabsModelList.Contains(container)) return;
+            if (TabsModelList.Contains(container))
+                return;
             CheckForChanges(container);
             TabsModelList.Add(container);
             RaisePropertyChanged("TabsModelList");
@@ -360,7 +366,8 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         if (msg.Notification == "OpenScriptList")
         {
             ScriptModel container = msg.Sender as ScriptModel;
-            if (TabsModelList.Contains(container)) return;
+            if (TabsModelList.Contains(container))
+                return;
             CheckForChanges(container);
             TabsModelList.Add(container);
             RaisePropertyChanged("TabsModelList");
@@ -379,23 +386,33 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
             ObservableObject Model = null;
             if (msg.Sender is FocusGridModel)
             {
-                Model = TabsModelList.FirstOrDefault((m) => m is FocusGridModel && 
-                                                            ((FocusGridModel)m).UniqueID == ((FocusGridModel)msg.Sender).UniqueID);
+                Model = TabsModelList.FirstOrDefault(
+                    (m) =>
+                        m is FocusGridModel
+                        && ((FocusGridModel)m).UniqueID == ((FocusGridModel)msg.Sender).UniqueID
+                );
             }
             else if (msg.Sender is LocalisationModel)
             {
-                Model = TabsModelList.FirstOrDefault((m) => m is LocalisationModel &&
-                                                            ((LocalisationModel)m).UniqueID == ((LocalisationModel)msg.Sender).UniqueID);
+                Model = TabsModelList.FirstOrDefault(
+                    (m) =>
+                        m is LocalisationModel
+                        && ((LocalisationModel)m).UniqueID == ((LocalisationModel)msg.Sender).UniqueID
+                );
             }
             else if (msg.Sender is EventTabModel)
             {
-                Model = TabsModelList.FirstOrDefault((m) => m is EventTabModel &&
-                                                            ((EventTabModel)m).UniqueID == ((EventTabModel)msg.Sender).UniqueID);
+                Model = TabsModelList.FirstOrDefault(
+                    (m) =>
+                        m is EventTabModel
+                        && ((EventTabModel)m).UniqueID == ((EventTabModel)msg.Sender).UniqueID
+                );
             }
             else if (msg.Sender is ScriptModel)
             {
-                Model = TabsModelList.FirstOrDefault((m) => m is ScriptModel &&
-                                                            ((ScriptModel)m).UniqueID == ((ScriptModel)msg.Sender).UniqueID);
+                Model = TabsModelList.FirstOrDefault(
+                    (m) => m is ScriptModel && ((ScriptModel)m).UniqueID == ((ScriptModel)msg.Sender).UniqueID
+                );
             }
             TabsModelList.Remove(Model);
             RaisePropertyChanged("TabsModelList");
@@ -422,35 +439,33 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         }
     }
 
-    async public Task<MessageDialogResult> ShowFileChangedDialog()
+    public async Task<MessageDialogResult> ShowFileChangedDialog()
     {
         string Title = LocalizationHelper.getValueForKey("Application_File_Changed_Header");
         string Message = LocalizationHelper.getValueForKey("Application_File_Changed");
         MetroDialogSettings settings = new MetroDialogSettings();
         settings.AffirmativeButtonText = LocalizationHelper.getValueForKey("Command_Yes");
         settings.NegativeButtonText = LocalizationHelper.getValueForKey("Command_No");
-        return await coordinator.ShowMessageAsync(this, Title, Message, 
-            MessageDialogStyle.AffirmativeAndNegative, settings);
+        return await coordinator.ShowMessageAsync(
+            this,
+            Title,
+            Message,
+            MessageDialogStyle.AffirmativeAndNegative,
+            settings
+        );
     }
 
     public void ExportProject()
     {
-        var dialog = new CommonOpenFileDialog();
+        var dialog = new OpenFolderDialog();
         dialog.Title = LocalizationHelper.getValueForKey("Project_Export");
-        dialog.IsFolderPicker = true;
         dialog.InitialDirectory = "C:";
-        dialog.AddToMostRecentlyUsedList = false;
-        dialog.AllowNonFileSystemItems = false;
         dialog.DefaultDirectory = "C:";
-        dialog.EnsureFileExists = true;
-        dialog.EnsurePathExists = true;
-        dialog.EnsureReadOnly = false;
-        dialog.EnsureValidNames = true;
         dialog.Multiselect = false;
-        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+        if (dialog.ShowDialog() == true)
         {
             DataHolder.Instance.Project.UpdateDataContract(Project);
-            DataHolder.Instance.Project.ExportProject(dialog.FileName);
+            DataHolder.Instance.Project.ExportProject(dialog.FolderName);
         }
     }
 
@@ -460,11 +475,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
 
     public ICommand WindowLoadedCommand
     {
-        get
-        {
-            return windowLoadedCommand ?? 
-                   (windowLoadedCommand = new RelayCommand(OnWindowLoaded));
-        }
+        get { return windowLoadedCommand ?? (windowLoadedCommand = new RelayCommand(OnWindowLoaded)); }
     }
 
     private void OnWindowLoaded()
