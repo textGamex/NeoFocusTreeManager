@@ -63,12 +63,14 @@ public static class ImageHelper
         {
             var value = source switch
             {
-                ImageType.Goal => AsyncImageLoader.AsyncImageLoader.Worker.Focuses
-                    .LastOrDefault(f => f.Key == imageName)
-                    .Value,
-                ImageType.Event => AsyncImageLoader.AsyncImageLoader.Worker.Events
-                    .LastOrDefault(f => f.Key == imageName)
-                    .Value,
+                ImageType.Goal
+                    => AsyncImageLoader
+                        .AsyncImageLoader.Worker.Focuses.LastOrDefault(f => f.Key == imageName)
+                        .Value,
+                ImageType.Event
+                    => AsyncImageLoader
+                        .AsyncImageLoader.Worker.Events.LastOrDefault(f => f.Key == imageName)
+                        .Value,
                 _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
             };
             //Make sure the value is set, if not, return the error image.

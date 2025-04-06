@@ -55,109 +55,31 @@ namespace FocusTreeManager.ViewModel
             //Notify
         }
 
-        public MainViewModel Main
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
+        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
 
-        public ManageFocusViewModel EditFocus
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ManageFocusViewModel>();
-            }
-        }
+        public ManageFocusViewModel EditFocus => ServiceLocator.Current.GetInstance<ManageFocusViewModel>();
 
-        public ChangeImageViewModel ChangeImage
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ChangeImageViewModel>();
-            }
-        }
+        public ChangeImageViewModel ChangeImage => ServiceLocator.Current.GetInstance<ChangeImageViewModel>();
 
-        public ProjectViewViewModel ProjectView
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ProjectViewViewModel>();
-            }
-        }
+        public ProjectViewViewModel ProjectView => ServiceLocator.Current.GetInstance<ProjectViewViewModel>();
 
-        public SettingsViewModel Settings
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<SettingsViewModel>();
-            }
-        }
+        public SettingsViewModel Settings => ServiceLocator.Current.GetInstance<SettingsViewModel>();
 
-        public FileManagerViewModel FileManager
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<FileManagerViewModel>();
-            }
-        }
+        public FileManagerViewModel FileManager => ServiceLocator.Current.GetInstance<FileManagerViewModel>();
 
-        public ProjectEditorViewModel ProjectEditor
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ProjectEditorViewModel>();
-            }
-        }
+        public ProjectEditorViewModel ProjectEditor => ServiceLocator.Current.GetInstance<ProjectEditorViewModel>();
 
-        public LocalizatorViewModel Localizator
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<LocalizatorViewModel>();
-            }
-        }
+        public LocalizatorViewModel Localizator => ServiceLocator.Current.GetInstance<LocalizatorViewModel>();
 
-        public ScripterViewModel Scripter
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ScripterViewModel>();
-            }
-        }
+        public ScripterViewModel Scripter => ServiceLocator.Current.GetInstance<ScripterViewModel>();
 
-        public ScripterControlsViewModel ScripterControls
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ScripterControlsViewModel>();
-            }
-        }
+        public ScripterControlsViewModel ScripterControls => ServiceLocator.Current.GetInstance<ScripterControlsViewModel>();
 
-        public CodeComparatorViewModel CodeComparator
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<CodeComparatorViewModel>();
-            }
-        }
+        public CodeComparatorViewModel CodeComparator => ServiceLocator.Current.GetInstance<CodeComparatorViewModel>();
 
-        public ErrorDawgViewModel ErrorDawg
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ErrorDawgViewModel>();
-            }
-        }
+        public ErrorDawgViewModel ErrorDawg => ServiceLocator.Current.GetInstance<ErrorDawgViewModel>();
 
-        public StatusBarViewModel StatusBar
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<StatusBarViewModel>();
-            }
-        }
+        public StatusBarViewModel StatusBar => ServiceLocator.Current.GetInstance<StatusBarViewModel>();
 
         public static void Cleanup()
         {

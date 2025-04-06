@@ -1,4 +1,4 @@
-﻿using FocusTreeManager.CodeStructures;
+using FocusTreeManager.CodeStructures;
 using FocusTreeManager.ViewModel;
 using FocusTreeManager.Views;
 using GalaSoft.MvvmLight;
@@ -372,10 +372,11 @@ namespace FocusTreeManager.Model
 
         public void ChangeImage()
         {
-            ChangeImage view = new ChangeImage();
-            new ViewModelLocator().ChangeImage.LoadImages("Events", Picture);
+            var view = new ChangeImage();
+            var locator = new ViewModelLocator();
+            locator.ChangeImage.LoadImages("Events", Picture);
             view.ShowDialog();
-            Picture = new ViewModelLocator().ChangeImage.FocusImage;
+            Picture = locator.ChangeImage.FocusImage;
         }
 
         public void EditLocale(string param)
