@@ -19,7 +19,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
-                <ResourceDictionary Source="/FocusTreeManager;component/Languages/En_en.xaml" x:Name="LocalizationStrings" />
+                <ResourceDictionary Source="/FocusTreeManager;component/Languages/zh_CN.xaml" x:Name="LocalizationStrings" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

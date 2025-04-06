@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Language" Type="System.String" Scope="User">
-      <Value Profile="(Default)">En_en</Value>
+      <Value Profile="(Default)">zh_CN</Value>
     </Setting>
     <Setting Name="Path" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

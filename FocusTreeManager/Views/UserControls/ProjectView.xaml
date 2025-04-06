@@ -1,18 +1,18 @@
 ﻿<UserControl
+    DataContext="{Binding ProjectView, Source={StaticResource Locator}}"
+    MinWidth="150"
+    mc:Ignorable="d"
     x:Class="FocusTreeManager.Views.UserControls.ProjectView"
+    x:Name="ProjectViewControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="ProjectViewControl"
-    MinWidth="150"
-    DataContext="{Binding ProjectView, Source={StaticResource Locator}}"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
-                <ResourceDictionary x:Name="LocalizationStrings" Source="/FocusTreeManager;component/Languages/En_en.xaml" />
+                <ResourceDictionary Source="/FocusTreeManager;component/Languages/zh_CN.xaml" x:Name="LocalizationStrings" />
             </ResourceDictionary.MergedDictionaries>
             <DataTemplate x:Key="TemplateLabel">
                 <StackPanel
@@ -40,14 +40,14 @@
                     <Grid>
                         <TextBlock
                             Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding VisibleName}" />
+                            Text="{Binding VisibleName}"
+                            VerticalAlignment="Center" />
                         <TextBox
-                            Margin="0,0,0,0"
-                            VerticalAlignment="Center"
                             KeyDown="TextBox_KeyDown"
                             LostFocus="UIElement_OnLostFocus"
+                            Margin="0,0,0,0"
                             Text="{Binding VisibleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            VerticalAlignment="Center"
                             Visibility="Hidden" />
                     </Grid>
                 </StackPanel>
@@ -60,45 +60,45 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Margin="5,0,5,5">
-            <ToolBarTray x:Name="FileViewerToolbar" Margin="20,0,0,0">
+            <ToolBarTray Margin="20,0,0,0" x:Name="FileViewerToolbar">
                 <ToolBar ToolBarTray.IsLocked="True">
                     <Button
-                        x:Name="AddButton"
                         Command="{Binding AddElementCommand}"
                         Content="添加"
-                        ToolTip="{DynamicResource Add_New_File}" />
+                        ToolTip="{DynamicResource Add_New_File}"
+                        x:Name="AddButton" />
                 </ToolBar>
                 <ToolBar ToolBarTray.IsLocked="True">
                     <Button
-                        x:Name="DeleteButton"
                         Command="{Binding DeleteElementMenuCommand}"
                         Content="删除"
-                        ToolTip="{DynamicResource Command_Delete}" />
+                        ToolTip="{DynamicResource Command_Delete}"
+                        x:Name="DeleteButton" />
                     <Button
-                        x:Name="EditButton"
                         Command="{Binding EditElementMenuCommand}"
                         Content="编辑"
-                        ToolTip="{DynamicResource Command_Edit}" />
+                        ToolTip="{DynamicResource Command_Edit}"
+                        x:Name="EditButton" />
                     <Button
-                        x:Name="RenameButton"
                         Click="RenameButton_Click"
                         Content="重命名"
                         IsEnabled="False"
-                        ToolTip="{DynamicResource Command_Rename}" />
+                        ToolTip="{DynamicResource Command_Rename}"
+                        x:Name="RenameButton" />
                     <Button
-                        x:Name="CopyButton"
                         Command="{Binding CopyElementMenuCommand}"
                         Content="拷贝"
-                        ToolTip="{DynamicResource Command_Create_Copy}" />
+                        ToolTip="{DynamicResource Command_Create_Copy}"
+                        x:Name="CopyButton" />
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
         <TreeView
-            x:Name="CodeTreeView"
             Grid.Row="1"
             ItemsSource="{Binding Project}"
             SelectedItemChanged="CodeTreeView_SelectedItemChanged"
-            TreeViewItem.Selected="CodeTreeView_Selected">
+            TreeViewItem.Selected="CodeTreeView_Selected"
+            x:Name="CodeTreeView">
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding AddElementCommand}" Header="{DynamicResource Add_New_File}" />

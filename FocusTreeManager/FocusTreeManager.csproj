@@ -178,4 +178,9 @@
       <HintPath>..\DDSReader.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Page Remove="Languages\Fr_fr.xaml" />
+    <Page Remove="Languages\Fr_fr_Tutorial.xaml" />
+    <Page Remove="Languages\ru_ru.xaml" />
+  </ItemGroup>
 </Project>

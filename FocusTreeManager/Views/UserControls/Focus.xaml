@@ -1,110 +1,145 @@
-﻿<UserControl x:Class="FocusTreeManager.Views.UserControls.Focus"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" x:Name="VisualFocus"
-             MouseDown="VisualFocus_MouseDown"
-             Loaded="VisualFocus_Loaded"
-             MouseEnter="Focus_OnMouseEnter"
-             MouseLeave="Focus_OnMouseLeave">
+﻿<UserControl
+    Loaded="VisualFocus_Loaded"
+    MouseDown="VisualFocus_MouseDown"
+    MouseEnter="Focus_OnMouseEnter"
+    MouseLeave="Focus_OnMouseLeave"
+    mc:Ignorable="d"
+    x:Class="FocusTreeManager.Views.UserControls.Focus"
+    x:Name="VisualFocus"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary x:Name="LocalizationStrings" Source="/FocusTreeManager;component/Languages/En_en.xaml"/>
+                <ResourceDictionary Source="/FocusTreeManager;component/Languages/zh_CN.xaml" x:Name="LocalizationStrings" />
                 <ResourceDictionary>
-                    <TextBlock x:Key="CursorGrab" Cursor="/FocusTreeManager;component/Resources/Cursors/grab.cur"/>
+                    <TextBlock Cursor="/FocusTreeManager;component/Resources/Cursors/grab.cur" x:Key="CursorGrab" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
-            <ContextMenu Tag="{Binding PlacementTarget.Tag, 
-		                             RelativeSource={RelativeSource Self}}"
-                         x:Key="ContextMenuUnSelected">
-                <MenuItem x:Name="MenuEditFocus" Header="{DynamicResource Edit_Focus}" 
-                            Command="{Binding EditFocusCommand}"/>
-                <MenuItem x:Name="MenuRenameFocus" Header="{DynamicResource Rename_Focus}"
-                            Click="MenuRenameFocus_Click"/>
-                <MenuItem x:Name="MenuDeleteFocus" Header="{DynamicResource Delete_Focus}" 
-                            Command="{Binding DeleteFocusCommand}"/>
+            <ContextMenu Tag="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" x:Key="ContextMenuUnSelected">
+                <MenuItem
+                    Command="{Binding EditFocusCommand}"
+                    Header="{DynamicResource Edit_Focus}"
+                    x:Name="MenuEditFocus" />
+                <MenuItem
+                    Click="MenuRenameFocus_Click"
+                    Header="{DynamicResource Rename_Focus}"
+                    x:Name="MenuRenameFocus" />
+                <MenuItem
+                    Command="{Binding DeleteFocusCommand}"
+                    Header="{DynamicResource Delete_Focus}"
+                    x:Name="MenuDeleteFocus" />
                 <Separator />
-                <MenuItem x:Name="MenuMutuallyFocus" Header="{DynamicResource Add_Mutually_Focus}" 
-                            Command="{Binding MutuallyFocusCommand}"/>
-                <MenuItem x:Name="MenuPrerequisitesFocus" Header="{DynamicResource Add_Prerequisite_Focus}" 
-                            Command="{Binding PrerequisiteFocusCommand}" CommandParameter="Optional"/>
-                <MenuItem x:Name="MenuRequiredPrerequisitesFocus" Header="{DynamicResource Add_Required_Prerequisite_Focus}" 
-                            Command="{Binding PrerequisiteFocusCommand}" CommandParameter="Required"/>
-                <MenuItem x:Name="MenuMakeRelativeTo" Header="{DynamicResource Add_Relative_Pos}" 
-                            Command="{Binding MakeRelativeToCommand}"/>
+                <MenuItem
+                    Command="{Binding MutuallyFocusCommand}"
+                    Header="{DynamicResource Add_Mutually_Focus}"
+                    x:Name="MenuMutuallyFocus" />
+                <MenuItem
+                    Command="{Binding PrerequisiteFocusCommand}"
+                    CommandParameter="Optional"
+                    Header="{DynamicResource Add_Prerequisite_Focus}"
+                    x:Name="MenuPrerequisitesFocus" />
+                <MenuItem
+                    Command="{Binding PrerequisiteFocusCommand}"
+                    CommandParameter="Required"
+                    Header="{DynamicResource Add_Required_Prerequisite_Focus}"
+                    x:Name="MenuRequiredPrerequisitesFocus" />
+                <MenuItem
+                    Command="{Binding MakeRelativeToCommand}"
+                    Header="{DynamicResource Add_Relative_Pos}"
+                    x:Name="MenuMakeRelativeTo" />
             </ContextMenu>
-            <ContextMenu Tag="{Binding PlacementTarget.Tag, 
-		                             RelativeSource={RelativeSource Self}}"
-                         x:Key="ContextMenuSelected">
-                <MenuItem x:Name="MenuDeleteSelectedFocus" Header="{DynamicResource Delete_Focus}" 
-                            Command="{Binding DeleteFocusCommand}"/>
-                <MenuItem x:Name="MenuCopy" Header="{DynamicResource Command_Copy}" 
-                            Command="{Binding Path=PlacementTarget.Tag.DataContext.CopyCommand, 
-                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" />
+            <ContextMenu Tag="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" x:Key="ContextMenuSelected">
+                <MenuItem
+                    Command="{Binding DeleteFocusCommand}"
+                    Header="{DynamicResource Delete_Focus}"
+                    x:Name="MenuDeleteSelectedFocus" />
+                <MenuItem
+                    Command="{Binding Path=PlacementTarget.Tag.DataContext.CopyCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                    Header="{DynamicResource Command_Copy}"
+                    x:Name="MenuCopy" />
             </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.Style>
         <Style TargetType="{x:Type UserControl}">
-            <Setter Property="ContextMenu"
-                     Value="{StaticResource ContextMenuUnSelected}" />
+            <Setter Property="ContextMenu" Value="{StaticResource ContextMenuUnSelected}" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsSelected}"
-                             Value="True">
-                    <Setter Property="ContextMenu"
-                            Value="{StaticResource ContextMenuSelected}" />
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="ContextMenu" Value="{StaticResource ContextMenuSelected}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Style>
-    <Grid Width="89" Height="80" x:Name="FocusGrid">
+    <Grid
+        Height="80"
+        Width="89"
+        x:Name="FocusGrid">
         <Grid.Style>
             <Style TargetType="{x:Type Grid}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsSelected}" Value="True">
                         <Setter Property="Effect">
                             <Setter.Value>
-                                <DropShadowEffect ShadowDepth="0" 
-                                                  Color="DodgerBlue" Opacity="1" BlurRadius="20"/>
+                                <DropShadowEffect
+                                    BlurRadius="20"
+                                    Color="DodgerBlue"
+                                    Opacity="1"
+                                    ShadowDepth="0" />
                             </Setter.Value>
                         </Setter>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding IsSelected}" Value="False">
-                        <!-- Remove the BlurEffect -->
-                        <Setter Property="Effect" Value="{x:Null}"/>
+                        <!--  Remove the BlurEffect  -->
+                        <Setter Property="Effect" Value="{x:Null}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </Grid.Style>
-        <Image Source="/FocusTreeManager;component/GFX/Interface/Focus_under.png" 
-               Margin="-38,42,-35,-42" Stretch="None" 
-               RenderOptions.ClearTypeHint="Auto"
-               RenderOptions.EdgeMode="Aliased"
-               RenderOptions.BitmapScalingMode="Linear"/>
-        <Image x:Name="FocusIcon" ToolTip="{Binding Note}" 
-               RenderOptions.ClearTypeHint="Auto"
-               RenderOptions.EdgeMode="Aliased"
-               RenderOptions.BitmapScalingMode="Linear">
-            <!--:Loader.DisplayOption="FullResolution"
-               l:Loader.Source="">-->
+        <Image
+            Margin="-38,42,-35,-42"
+            RenderOptions.BitmapScalingMode="Linear"
+            RenderOptions.ClearTypeHint="Auto"
+            RenderOptions.EdgeMode="Aliased"
+            Source="/FocusTreeManager;component/GFX/Interface/Focus_under.png"
+            Stretch="None" />
+        <Image
+            RenderOptions.BitmapScalingMode="Linear"
+            RenderOptions.ClearTypeHint="Auto"
+            RenderOptions.EdgeMode="Aliased"
+            ToolTip="{Binding Note}"
+            x:Name="FocusIcon">
+            <!--
+                :Loader.DisplayOption="FullResolution"
+                l:Loader.Source="">
+            -->
             <Image.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditFocusCommand}" />
-                <MouseBinding Gesture="LeftClick" Command="{Binding TestFinishCommand}" />
+                <MouseBinding Command="{Binding EditFocusCommand}" Gesture="LeftDoubleClick" />
+                <MouseBinding Command="{Binding TestFinishCommand}" Gesture="LeftClick" />
             </Image.InputBindings>
         </Image>
         <Grid Margin="-28,72,-28,-18">
-            <Label x:Name="label" HorizontalAlignment="Left" Height="26"  
-                   VerticalAlignment="Top" Width="145" FontFamily="Calibri"
-                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                <TextBlock Text="{Binding VisibleName}" TextWrapping="WrapWithOverflow"/>
+            <Label
+                FontFamily="Calibri"
+                Height="26"
+                HorizontalAlignment="Left"
+                HorizontalContentAlignment="Center"
+                VerticalAlignment="Top"
+                VerticalContentAlignment="Center"
+                Width="145"
+                x:Name="label">
+                <TextBlock Text="{Binding VisibleName}" TextWrapping="WrapWithOverflow" />
             </Label>
-            <TextBox Width="110" x:Name="TextBoxName"
-                         VerticalAlignment="Center"
-                         Text="{Binding UniqueName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         BorderThickness="0"  Visibility="Hidden"
-                         KeyDown="TextBox_KeyDown" />
+            <TextBox
+                BorderThickness="0"
+                KeyDown="TextBox_KeyDown"
+                Text="{Binding UniqueName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                VerticalAlignment="Center"
+                Visibility="Hidden"
+                Width="110"
+                x:Name="TextBoxName" />
         </Grid>
     </Grid>
 </UserControl>
