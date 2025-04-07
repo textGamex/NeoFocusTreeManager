@@ -101,7 +101,7 @@ public class FileManagerViewModel : ViewModelBase
                         //If a focus tree
                         if (script.FindAssignation("focus_tree") != null)
                         {
-                            File = Parsers.FocusTreeParser.CreateTreeFromScript(dialog.FileName, script);
+                            File = Parsers.FocusTreeParser.CreateTreeFromScript(script);
                             ((FocusGridModel)File).FileInfo = new DataContract.FileInfo
                             {
                                 Filename = dialog.FileName,

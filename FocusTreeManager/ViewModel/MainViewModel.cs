@@ -457,11 +457,13 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
 
     public void ExportProject()
     {
-        var dialog = new OpenFolderDialog();
-        dialog.Title = LocalizationHelper.getValueForKey("Project_Export");
-        dialog.InitialDirectory = "C:";
-        dialog.DefaultDirectory = "C:";
-        dialog.Multiselect = false;
+        var dialog = new OpenFolderDialog
+        {
+            Title = LocalizationHelper.getValueForKey("Project_Export"),
+            InitialDirectory = "C:",
+            DefaultDirectory = "C:",
+            Multiselect = false
+        };
         if (dialog.ShowDialog() == true)
         {
             DataHolder.Instance.Project.UpdateDataContract(Project);

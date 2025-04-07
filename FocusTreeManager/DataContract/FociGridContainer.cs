@@ -48,7 +48,6 @@ public class FociGridContainer
         IdentifierID = item.UniqueID;
         ContainerID = item.VisibleName;
         TAG = item.TAG;
-        AdditionnalMods = item.AdditionnalMods;
         FileInfo = item.FileInfo;
         FociList = new List<Focus>();
         foreach (FocusModel model in item.FociList)
@@ -56,7 +55,6 @@ public class FociGridContainer
             FociList.Add(new Focus
             {
                 UniqueName = model.UniqueName,
-                Text = model.Text,
                 Image = model.Image,
                 X = model.X,
                 Y = model.Y,

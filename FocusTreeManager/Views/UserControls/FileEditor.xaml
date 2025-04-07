@@ -67,19 +67,6 @@
                         Grid.Row="2"
                         Text="{Binding TAG}"
                         x:Name="FocusTreeTag" />
-                    <Label
-                        Content="{DynamicResource Focus_Additional_Mods}"
-                        Grid.Column="0"
-                        Grid.Row="3"
-                        ToolTip="{DynamicResource Focus_Additional_Mods_Tooltip}" />
-                    <TextBox
-                        AcceptsReturn="True"
-                        Grid.Column="1"
-                        Grid.Row="3"
-                        Height="170"
-                        Text="{Binding AdditionnalMods}"
-                        TextWrapping="Wrap"
-                        x:Name="FocusTreeAddMods" />
                 </Grid>
             </DataTemplate>
             <DataTemplate DataType="{x:Type tabModels:LocalisationModel}">

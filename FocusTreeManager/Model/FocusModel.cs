@@ -369,7 +369,6 @@ public class FocusModel : ObservableObject, ISupportsUndo
     {
         image = focus.Image;
         uniquename = focus.UniqueName;
-        text = focus.Text;
         x = focus.X;
         y = focus.Y;
         cost = focus.Cost;

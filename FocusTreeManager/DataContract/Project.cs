@@ -1,11 +1,10 @@
-﻿using FocusTreeManager.Model;
-using FocusTreeManager.Parsers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using FocusTreeManager.Model.TabModels;
 using System.Text;
+using FocusTreeManager.Model;
+using FocusTreeManager.Parsers;
 
 namespace FocusTreeManager.DataContract;
 
@@ -16,7 +15,7 @@ namespace FocusTreeManager.DataContract;
 [DataContract(Name = "project")]
 public sealed class Project
 {
-    private const string FOCUS_TREE_PATH = @"\common\national_focus\";
+    private static readonly string FocusTreePath = Path.Combine("common", "national_focus");
 
     private const string LOCALISATION_PATH = @"\localisation\";
 
@@ -47,57 +46,45 @@ public sealed class Project
 
     public Project()
     {
-        modFolderList = new List<string>();
-        fociContainerList = new List<FociGridContainer>();
-        localisationList = new List<LocalisationContainer>();
-        eventList = new List<EventContainer>();
-        scriptList = new List<ScriptContainer>();
+        modFolderList = [];
+        fociContainerList = [];
+        localisationList = [];
+        eventList = [];
+        scriptList = [];
     }
 
     public void ExportProject(string paramFilename)
     {
-        string path = paramFilename + FOCUS_TREE_PATH;
+        string path = Path.Combine(paramFilename, FocusTreePath);
         Directory.CreateDirectory(path);
         //For each parsed focus trees
-        foreach (KeyValuePair<string, string> item in
-                 FocusTreeParser.ParseAllTrees(fociContainerList))
+        foreach (var item in FocusTreeParser.ParseAllTrees(fociContainerList))
         {
-            using (TextWriter tw = new StreamWriter(path + item.Key + ".txt"))
-            {
-                tw.Write(item.Value);
-            }
+            using var tw = new StreamWriter(Path.Combine(path, $"{item.Key}.txt"));
+            tw.Write(item.Value);
         }
         path = paramFilename + LOCALISATION_PATH;
         Directory.CreateDirectory(Path.GetDirectoryName(path));
         //For each parsed localisation files
-        foreach (KeyValuePair<string, string> item in
-                 LocalisationParser.ParseEverything(localisationList))
+        foreach (var item in LocalisationParser.ParseEverything(localisationList))
         {
-            using (Stream stream = File.OpenWrite(path + item.Key + ".yml"))
-            using (TextWriter tw = new StreamWriter(stream, new UTF8Encoding()))
-            {
-                tw.Write(item.Value);
-            }
+            using Stream stream = File.OpenWrite($"{path}{item.Key}.yml");
+            using var tw = new StreamWriter(stream, Encoding.UTF8);
+            tw.Write(item.Value);
         }
         path = paramFilename + EVENTS_PATH;
         Directory.CreateDirectory(Path.GetDirectoryName(path));
         //For each parsed event file
-        foreach (KeyValuePair<string, string> item in
-                 EventParser.ParseAllEvents(eventList))
+        foreach (var item in EventParser.ParseAllEvents(eventList))
         {
-            using (TextWriter tw = new StreamWriter(path + item.Key + ".txt"))
-            {
-                tw.Write(item.Value);
-            }
+            using var tw = new StreamWriter($"{path}{item.Key}.txt");
+            tw.Write(item.Value);
         }
         //For each parsed script file
-        foreach (KeyValuePair<string, string> item in
-                 ScriptParser.ParseEverything(scriptList))
+        foreach (var item in ScriptParser.ParseEverything(scriptList))
         {
-            using (TextWriter tw = new StreamWriter(paramFilename + "\\" + item.Key + ".txt"))
-            {
-                tw.Write(item.Value);
-            }
+            using var tw = new StreamWriter($"{paramFilename}\\{item.Key}.txt");
+            tw.Write(item.Value);
         }
     }
 
@@ -108,38 +95,41 @@ public sealed class Project
         preloadGameContent = model.PreloadGameContent;
         //Build foci list
         fociContainerList.Clear();
-        foreach (FocusGridModel item in model.fociList)
+        foreach (var item in model.fociList)
         {
             fociContainerList.Add(new FociGridContainer(item));
         }
         //Build localization list
         localisationList.Clear();
-        foreach (LocalisationModel item in model.localisationList)
+        foreach (var item in model.localisationList)
         {
             localisationList.Add(new LocalisationContainer(item));
         }
         //Build events list
         eventList.Clear();
-        foreach (EventTabModel item in model.eventList)
+        foreach (var item in model.eventList)
         {
             eventList.Add(new EventContainer(item));
         }
         //Build scripts list
         scriptList.Clear();
-        foreach (ScriptModel item in model.scriptList)
+        foreach (var item in model.scriptList)
         {
-            scriptList.Add(new ScriptContainer()
-            {
-                IdentifierID = item.UniqueID,
-                ContainerID = item.VisibleName,
-                InternalScript = item.InternalScript,
-                FileInfo = item.FileInfo
-            });
+            scriptList.Add(
+                new ScriptContainer()
+                {
+                    IdentifierID = item.UniqueID,
+                    ContainerID = item.VisibleName,
+                    InternalScript = item.InternalScript,
+                    FileInfo = item.FileInfo
+                }
+            );
         }
         if (localisationList.Any() && model.DefaultLocale != null)
         {
-            defaultLocale = localisationList.FirstOrDefault(l => l.IdentifierID
-                                                                 == model.DefaultLocale.UniqueID);
+            defaultLocale = localisationList.FirstOrDefault(l =>
+                l.IdentifierID == model.DefaultLocale.UniqueID
+            );
         }
     }
 }

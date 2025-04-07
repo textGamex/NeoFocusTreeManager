@@ -161,23 +161,6 @@ public class FocusGridModel : ObservableObject, ISupportsUndo
         }
     }
 
-    public string AdditionnalMods
-    {
-        get
-        {
-            return additionnalMods;
-        }
-        set
-        {
-            if (value == additionnalMods)
-            {
-                return;
-            }
-            additionnalMods = value;
-            RaisePropertyChanged(() => AdditionnalMods);
-        }
-    }
-
     public DataContract.FileInfo FileInfo
     {
         get

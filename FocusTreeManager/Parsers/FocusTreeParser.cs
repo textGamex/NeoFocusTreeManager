@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -9,6 +9,9 @@ using FocusTreeManager.DataContract;
 using FocusTreeManager.Model;
 using FocusTreeManager.Model.TabModels;
 using FocusTreeManager.ViewModel;
+using ParadoxPower.CSharpExtensions;
+using ParadoxPower.Parser;
+using ParadoxPower.Process;
 
 namespace FocusTreeManager.Parsers;
 
@@ -38,7 +41,7 @@ public static class FocusTreeParser
     {
         var script = new Script();
         script.Analyse(File.ReadAllText(filename));
-        return !File.Exists(filename) ? "" : ParseTreeForCompare(CreateTreeFromScript(filename, script));
+        return !File.Exists(filename) ? "" : ParseTreeForCompare(CreateTreeFromScript(script));
     }
 
     public static Dictionary<string, string> ParseAllTrees(List<FociGridContainer> containers)
@@ -46,118 +49,135 @@ public static class FocusTreeParser
         var fileList = new Dictionary<string, string>();
         foreach (var container in containers)
         {
-            string ID = container.ContainerID.Replace(" ", "_");
-            fileList[ID] = Parse(container.FociList.ToList(), ID, container.TAG, container.AdditionnalMods);
+            string id = container.ContainerID.Replace(' ', '_');
+            fileList[id] = Parse(container.FociList, id, container.TAG, container.AdditionnalMods);
         }
         return fileList;
     }
 
-    public static string Parse(List<Focus> listFoci, string FocusTreeId, string TAG, string AdditionnalMods)
+    private static string Parse(List<Focus> focusList, string focusTreeId, string tag, string additionnalMods)
     {
-        var text = new StringBuilder();
-        listFoci = prepareParse(listFoci);
-        text.AppendLine("focus_tree = {");
-        text.AppendLine("\tid = " + FocusTreeId);
-        text.AppendLine("\tcountry = {");
-        if (!string.IsNullOrEmpty(TAG))
+        focusList = PrepareParse(focusList);
+        var focusTreeNode = new Node("focus_tree");
+        var countryNode = CreateCountryNode(tag);
+        var childrenList = new List<Child>(8)
         {
-            text.AppendLine("\t\tfactor = 0");
-            text.AppendLine("\t\tmodifier = {");
-            text.AppendLine("\t\t\tadd = 10");
-            text.AppendLine("\t\t\ttag = " + TAG);
-            if (!string.IsNullOrEmpty(AdditionnalMods))
+            ChildHelper.LeafString("id", focusTreeId),
+            Child.Create(countryNode),
+            !string.IsNullOrEmpty(tag)
+                ? ChildHelper.Leaf("default", false)
+                : ChildHelper.Leaf("default", true)
+        };
+
+        foreach (var focus in focusList)
+        {
+            var focusNode = new Node("focus");
+            var focusChildren = new List<Child>(8)
             {
-                foreach (string line in AdditionnalMods.Split('\n'))
+                ChildHelper.LeafString("id", focus.UniqueName),
+                ChildHelper.LeafString("icon", $"GFX_{focus.Image}"),
+                ChildHelper.Leaf("cost", (int)focus.Cost),
+                ChildHelper.Leaf("x", focus.X),
+                ChildHelper.Leaf("y", focus.Y)
+            };
+
+            if (focus.Prerequisite.Count != 0)
+            {
+                foreach (var prerequisiteSet in focus.Prerequisite)
                 {
-                    text.AppendLine("\t\t\t" + line);
+                    var prerequisiteNode = new Node("prerequisite");
+                    var prerequisiteChildren = new List<Child>(4);
+                    foreach (var prerequisiteFocus in prerequisiteSet.FociList)
+                    {
+                        prerequisiteChildren.Add(
+                            ChildHelper.LeafString("focus", prerequisiteFocus.UniqueName)
+                        );
+                    }
+                    prerequisiteNode.AllArray = prerequisiteChildren.ToArray();
+                    focusChildren.Add(Child.Create(prerequisiteNode));
                 }
             }
-            text.AppendLine("\t\t}");
-            text.AppendLine("\t}");
-            text.AppendLine("\tdefault = no");
-        }
-        //It is generic, make it default
-        else
-        {
-            text.AppendLine("\t\tfactor = 1");
-            text.AppendLine("\t}");
-            text.AppendLine("\tdefault = yes");
-        }
-        foreach (var focus in listFoci)
-        {
-            text.AppendLine("\tfocus = {");
-            text.AppendLine("\t\tid = " + focus.UniqueName);
-            if (!string.IsNullOrEmpty(focus.Text))
+
+            if (focus.MutualyExclusive.Count != 0)
             {
-                text.AppendLine("\t\ttext = " + focus.Text);
-            }
-            text.AppendLine("\t\ticon = GFX_" + focus.Image);
-            text.AppendLine("\t\tcost = " + $"{focus.Cost:0.00}");
-            if (focus.Prerequisite.Any())
-            {
-                foreach (var prereqisite in focus.Prerequisite)
+                foreach (var set in focus.MutualyExclusive)
                 {
-                    text.AppendLine("\t\tprerequisite = {");
-                    foreach (var PreFoci in prereqisite.FociList)
-                    {
-                        text.AppendLine("\t\t\tfocus = " + PreFoci.UniqueName);
-                    }
-                    text.AppendLine("\t\t}");
+                    var mutuallyExclusiveNode = new Node("mutually_exclusive");
+                    mutuallyExclusiveNode.AddChild(
+                        set.Focus1.UniqueName == focus.UniqueName
+                            ? ChildHelper.LeafString("focus", set.Focus2.UniqueName)
+                            : ChildHelper.LeafString("focus", set.Focus1.UniqueName)
+                    );
+                    focusChildren.Add(Child.Create(mutuallyExclusiveNode));
                 }
             }
-            if (focus.MutualyExclusive.Any())
+
+            if (focus.RelativeTo is not null)
             {
-                text.AppendLine("\t\tmutually_exclusive = {");
-                foreach (var ExclusiveSet in focus.MutualyExclusive)
-                {
-                    if (ExclusiveSet.Focus1.UniqueName != focus.UniqueName)
-                    {
-                        text.AppendLine("\t\t\tfocus = " + ExclusiveSet.Focus1.UniqueName);
-                    }
-                    else
-                    {
-                        text.AppendLine("\t\t\tfocus = " + ExclusiveSet.Focus2.UniqueName);
-                    }
-                }
-                text.AppendLine("\t\t}");
+                focusChildren.Add(
+                    ChildHelper.LeafString("relative_position_id", focus.RelativeTo.UniqueName)
+                );
             }
-            text.AppendLine("\t\tx = " + focus.X);
-            text.AppendLine("\t\ty = " + focus.Y);
-            if (focus.RelativeTo != null)
-            {
-                text.AppendLine("\t\trelative_position_id = " + focus.RelativeTo.UniqueName);
-            }
-            text.AppendLine(focus.InternalScript.Parse(null, 3));
-            text.AppendLine("\t}");
+
+            focusNode.AllArray = focusChildren.ToArray();
+            childrenList.Add(Child.Create(focusNode));
         }
-        text.AppendLine("}");
-        return text.ToString();
+
+        focusTreeNode.AllArray = childrenList.ToArray();
+
+        // TODO: 重新实现内部脚本解析
+        // foreach (var focus in focusList)
+        // {
+        //     text.AppendLine(focus.InternalScript.Parse(null, 3));
+        // }
+
+        return CKPrinter.PrettyPrintStatement(focusTreeNode.ToRaw);
     }
 
-    private static List<Focus> prepareParse(List<Focus> listFoci)
+    private static Node CreateCountryNode(string countryTag)
     {
-        if (!listFoci.Any())
-            return new List<Focus>();
-        var SortedList = new List<Focus>();
-        var HoldedList = new List<Focus>();
+        var countryNode = Node.Create("country");
+        countryNode.AddChild(ChildHelper.Leaf("factor", 0));
+
+        if (!string.IsNullOrEmpty(countryTag))
+        {
+            var modifierNode = new Node("modifier")
+            {
+                AllArray = [ChildHelper.Leaf("add", 10), ChildHelper.LeafString("tag", countryTag)]
+            };
+            countryNode.AddChild(modifierNode);
+        }
+
+        return countryNode;
+    }
+
+    private static List<Focus> PrepareParse(List<Focus> listFoci)
+    {
+        if (listFoci.Count == 0)
+        {
+            return [];
+        }
+
+        var sortedList = new List<Focus>();
+        var holdedList = new List<Focus>();
         //Add the roots, the nodes without any perequisites. Helps with performance
-        SortedList.AddRange(listFoci.Where(f => !f.Prerequisite.Any()));
-        int MaxY = listFoci.Max(i => i.Y);
-        int MaxX = listFoci.Max(i => i.X);
+        sortedList.AddRange(listFoci.Where(f => f.Prerequisite.Count == 0));
+        int maxY = listFoci.Max(i => i.Y);
+        int maxX = listFoci.Max(i => i.X);
         //For each X in the grid
-        for (int i = 0; i < MaxX; i++)
+        for (int i = 0; i < maxX; i++)
         {
             //For each Y in the grid
-            for (int j = 0; j < MaxY; j++)
+            for (int j = 0; j < maxY; j++)
             {
                 //If there is a focus with the current X and Y
-                var focus = listFoci.FirstOrDefault((f) => f.X == i && f.Y == j);
+                var focus = listFoci.FirstOrDefault(f => f.X == i && f.Y == j);
                 if (focus == null)
                 {
                     continue;
                 }
                 //If the prerequisites are not present
-                if (!CheckPrerequisite(focus, SortedList))
+                if (!CheckPrerequisite(focus, sortedList))
                 {
                     foreach (var set in focus.Prerequisite)
                     {
@@ -166,44 +186,44 @@ public static class FocusTreeParser
                         {
                             //If that focus has no prerequisites or the prerequisites are present
                             if (
-                                (CheckPrerequisite(setFocus, SortedList) || !setFocus.Prerequisite.Any())
-                                && !SortedList.Contains(setFocus)
+                                (CheckPrerequisite(setFocus, sortedList) || !setFocus.Prerequisite.Any())
+                                && !sortedList.Contains(setFocus)
                             )
                             {
                                 //Add it if it is not there already
-                                SortedList.Add(setFocus);
+                                sortedList.Add(setFocus);
                             }
                         }
                     }
                     //Recheck prerequisite again
-                    if (CheckPrerequisite(focus, SortedList) && !SortedList.Contains(focus))
+                    if (CheckPrerequisite(focus, sortedList) && !sortedList.Contains(focus))
                     {
                         //Add the focus to the sorted list
-                        SortedList.Add(focus);
+                        sortedList.Add(focus);
                     }
                     else
                     {
                         //Add the current focus to the holded list
-                        HoldedList.Add(focus);
+                        holdedList.Add(focus);
                         break;
                     }
                 }
-                else if (!SortedList.Contains(focus))
+                else if (!sortedList.Contains(focus))
                 {
                     //Otherwise, add it to the list
-                    SortedList.Add(focus);
+                    sortedList.Add(focus);
                 }
                 //Check if we can add some of the holded focus
-                AddBackwardsPrerequisite(HoldedList, SortedList);
+                AddBackwardsPrerequisite(holdedList, sortedList);
             }
             //Check if we can add some of the holded focus
-            AddBackwardsPrerequisite(HoldedList, SortedList);
+            AddBackwardsPrerequisite(holdedList, sortedList);
         }
         //Check if we can add some of the holded focus
-        AddBackwardsPrerequisite(HoldedList, SortedList);
+        AddBackwardsPrerequisite(holdedList, sortedList);
         //Just to be sure, add any prerequisite that are not in the list, but in the original
-        SortedList.AddRange(listFoci.Except(SortedList));
-        return SortedList;
+        sortedList.AddRange(listFoci.Except(sortedList));
+        return sortedList;
     }
 
     private static bool CheckPrerequisite(Focus focus, ICollection<Focus> SortedList)
@@ -234,7 +254,7 @@ public static class FocusTreeParser
         }
     }
 
-    public static FocusGridModel CreateTreeFromScript(string fileName, Script script)
+    public static FocusGridModel CreateTreeFromScript(Script script)
     {
         if (script.Logger.hasErrors())
         {
@@ -244,12 +264,6 @@ public static class FocusTreeParser
         //Get content of Modifier block
         var modifier = script.FindAssignation("modifier");
         container.TAG = script.TryParse(modifier, "tag", null, false);
-        if (container.TAG != null)
-        {
-            container.AdditionnalMods = modifier
-                .GetContentAsScript(new[] { "add", "tag" })
-                .Parse(script.Comments, 0);
-        }
         //Run through all foci
         foreach (var codeStruct in script.FindAllValuesOfType<CodeBlock>("focus"))
         {
@@ -356,7 +370,7 @@ public static class FocusTreeParser
         return container;
     }
 
-    public static double GetDouble(string value, double defaultValue)
+    private static double GetDouble(string value, double defaultValue)
     {
         double result;
         //Try parsing in the current culture

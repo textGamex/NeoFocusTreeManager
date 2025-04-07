@@ -120,7 +120,6 @@ public class ProjectViewViewModel : ViewModelBase
             new ViewModelLocator().FileManager.File = new FocusGridModel(item.VisibleName)
             {
                 TAG = item.TAG,
-                AdditionnalMods = item.AdditionnalMods
             };
             dialog.ShowDialog();
             if (new ViewModelLocator().FileManager.File == null) return;
@@ -128,7 +127,6 @@ public class ProjectViewViewModel : ViewModelBase
             if (newItem == null) return;
             item.VisibleName = newItem.VisibleName;
             item.TAG = newItem.TAG;
-            item.AdditionnalMods = newItem.AdditionnalMods;
         }
         else if (obj is LocalisationModel)
         {
