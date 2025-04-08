@@ -12,7 +12,7 @@ public static class SerializationHelper
 {
     private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-    public static Project Deserialize(string filename)
+    public static Project? Deserialize(string filename)
     {
         //If we are loading a legacy version
         try
@@ -22,7 +22,7 @@ public static class SerializationHelper
                 using var fs = new FileStream(filename, FileMode.Open);
                 using var reader = XmlReader.Create(fs);
                 var ser = new DataContractSerializer(typeof(Project));
-                var project = (Project)ser.ReadObject(reader, true);
+                var project = (Project?)ser.ReadObject(reader, true);
                 return project;
             }
             return null;

@@ -35,9 +35,9 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         }
     }
 
-    private ProjectModel project;
+    private ProjectModel? project;
 
-    public ProjectModel Project
+    public ProjectModel? Project
     {
         get => project;
         set
@@ -81,7 +81,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
     public RelayCommand UndoCommand { get; private set; }
 
     public RelayCommand RedoCommand { get; private set; }
-    
+
     private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public MainViewModel()
@@ -161,8 +161,11 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         ProjectEditor dialog = new ProjectEditor();
         Vm.Project = new ProjectModel();
         dialog.ShowDialog();
-        if (Vm.Project == null)
+        if (Vm.Project is null)
+        {
             return;
+        }
+
         //Check if the files already exists, if yes, show a message
         if (File.Exists(Vm.Project.Filename))
         {
@@ -244,7 +247,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         catch (Exception ex)
         {
             Log.Error(ex, "加载项目文件失败");
-            
+
             string Title = LocalizationHelper.getValueForKey("Application_Error");
             string Message = LocalizationHelper.getValueForKey("Application_Error_Loading");
             coordinator.ShowMessageAsync(this, Title, Message);

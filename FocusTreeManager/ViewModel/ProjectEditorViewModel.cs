@@ -10,9 +10,9 @@ namespace FocusTreeManager.ViewModel;
 
 public class ProjectEditorViewModel : ViewModelBase
 {
-    private ProjectModel project;
+    private ProjectModel? project;
 
-    public ProjectModel Project
+    public ProjectModel? Project
     {
         get { return project; }
         set

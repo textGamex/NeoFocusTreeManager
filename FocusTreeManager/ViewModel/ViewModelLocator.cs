@@ -55,9 +55,7 @@ public class ViewModelLocator
     public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
 
     public ManageFocusViewModel EditFocus => ServiceLocator.Current.GetInstance<ManageFocusViewModel>();
-
-    public ChangeImageViewModel ChangeImage => ServiceLocator.Current.GetInstance<ChangeImageViewModel>();
-
+    
     public ProjectViewViewModel ProjectView => ServiceLocator.Current.GetInstance<ProjectViewViewModel>();
 
     public SettingsViewModel Settings => ServiceLocator.Current.GetInstance<SettingsViewModel>();

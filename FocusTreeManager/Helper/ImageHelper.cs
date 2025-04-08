@@ -107,8 +107,10 @@ public static class ImageHelper
             ImageType.Event => GfxEventFolder,
             _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
         };
-        //For each file in add mod folders
-        var model = new ViewModelLocator().Main.Project;
+        var locator = new ViewModelLocator();
+        //既有可能是 MainViewModel，也有可能是 ProjectEditorViewModel
+        var model = locator.Main.Project;
+        model ??= locator.ProjectEditor.Project;
         if (model?.ListModFolders == null)
         {
             return list;
