@@ -40,7 +40,7 @@ public class SettingsViewModel : ViewModelBase
     {
         get
         {
-            return Configurator.getGamePath();
+            return Configurator.GetGamePath();
         }
         set
         {

@@ -38,7 +38,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
 
     public ProjectModel Project
     {
-        get { return project; }
+        get => project;
         set
         {
             project = value;

@@ -39,7 +39,7 @@ public static class Configurator
         Properties.Settings.Default.Save();
     }
 
-    public static string getGamePath()
+    public static string GetGamePath()
     {
         return Properties.Settings.Default.Path;
     }

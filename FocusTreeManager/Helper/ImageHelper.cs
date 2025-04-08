@@ -46,8 +46,6 @@ public static class ImageHelper
 
     private const string GfxEventFolder = @"gfx\event_pictures";
 
-    private const string GfxExtension = ".dds";
-
     private const string GfxErrorImage = @"GFX\Focus\goal_unknown.png";
 
     private static readonly string[] ImageDoNotLoad = ["shine_mask", "shine_overlay"];
@@ -85,7 +83,6 @@ public static class ImageHelper
 
     public static Dictionary<string, ImageSource> FindAllGameImages(ImageType source)
     {
-        var list = new Dictionary<string, ImageSource>();
         string rightFolder = source switch
         {
             ImageType.Goal => GfxGoalFolder,
@@ -93,42 +90,8 @@ public static class ImageHelper
             _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
         };
 
-        string fullPath = Path.Combine(Configurator.getGamePath(), rightFolder);
-        if (!Directory.Exists(fullPath))
-        {
-            return list;
-        }
-        //For each file in the normal folder
-        foreach (
-            string filename in Directory.EnumerateFiles(
-                fullPath,
-                $"*{GfxExtension}",
-                SearchOption.TopDirectoryOnly
-            )
-        )
-        {
-            if (ImageDoNotLoad.Any(filename.Contains))
-            {
-                continue;
-            }
-            try
-            {
-                string imageName = Path.GetFileNameWithoutExtension(filename);
-                //try to replace potential broken links because of typos in the file names.
-                imageName =
-                    Array.IndexOf(ArrayAssociatedTypo, imageName) != -1
-                        ? ArrayFileName[Array.IndexOf(ArrayAssociatedTypo, imageName)]
-                        : imageName;
-                var result = ImageSourceForBitmap(DDS.LoadImage(filename));
-                result.Freeze();
-                list[imageName] = result;
-            }
-            catch (Exception)
-            {
-                // ignored, we don't want to kill the whole process for one missing image
-            }
-        }
-        return list;
+        string fullPath = Path.Combine(Configurator.GetGamePath(), rightFolder);
+        return GetImages(fullPath);
     }
 
     public static Dictionary<string, ImageSource> RefreshFromMods(ImageType source)
@@ -150,41 +113,61 @@ public static class ImageHelper
         foreach (string modPath in model.ListModFolders)
         {
             string fullPath = Path.Combine(modPath, rightFolder);
-            if (!Directory.Exists(fullPath))
+            foreach (var image in GetImages(fullPath))
+            {
+                list[image.Key] = image.Value;
+            }
+        }
+
+        return list;
+    }
+
+    private static Dictionary<string, ImageSource> GetImages(string path)
+    {
+        var map = new Dictionary<string, ImageSource>();
+        if (!Directory.Exists(path))
+        {
+            return map;
+        }
+
+        foreach (string filePath in Directory.EnumerateFiles(path, "*", SearchOption.TopDirectoryOnly))
+        {
+            var extension = Path.GetExtension(filePath.AsSpan());
+            if (
+                !extension.Equals(".dds", StringComparison.OrdinalIgnoreCase)
+                && !extension.Equals(".png", StringComparison.OrdinalIgnoreCase)
+            )
             {
                 continue;
             }
-            foreach (
-                string filename in Directory.EnumerateFiles(
-                    fullPath,
-                    $"*{GfxExtension}",
-                    SearchOption.TopDirectoryOnly
-                )
-            )
+
+            if (ImageDoNotLoad.Any(filePath.Contains))
             {
-                if (ImageDoNotLoad.Any(filename.Contains))
-                {
-                    continue;
-                }
-                try
-                {
-                    string imageName = Path.GetFileNameWithoutExtension(filename);
-                    //try to replace potential broken links because of typos in the file names.
-                    imageName =
-                        Array.IndexOf(ArrayAssociatedTypo, imageName) != -1
-                            ? ArrayFileName[Array.IndexOf(ArrayAssociatedTypo, imageName)]
-                            : imageName;
-                    var result = ImageSourceForBitmap(DDS.LoadImage(filename));
-                    result.Freeze();
-                    list[imageName] = result;
-                }
-                catch (Exception)
-                {
-                    // ignored, we don't want to kill the whole process for one missing image
-                }
+                continue;
+            }
+
+            try
+            {
+                string imageName = Path.GetFileNameWithoutExtension(filePath);
+                //try to replace potential broken links because of typos in the file names.
+                imageName =
+                    Array.IndexOf(ArrayAssociatedTypo, imageName) != -1
+                        ? ArrayFileName[Array.IndexOf(ArrayAssociatedTypo, imageName)]
+                        : imageName;
+                var result = extension.Equals(".dds", StringComparison.OrdinalIgnoreCase)
+                    ? ImageSourceForBitmap(DDS.LoadImage(filePath))
+                    : new BitmapImage(new Uri(filePath));
+
+                result.Freeze();
+                map[imageName] = result;
+            }
+            catch (Exception)
+            {
+                // ignored, we don't want to kill the whole process for one missing image
             }
         }
-        return list;
+
+        return map;
     }
 
     [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]

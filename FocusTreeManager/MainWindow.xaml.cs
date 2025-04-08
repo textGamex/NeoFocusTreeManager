@@ -132,7 +132,7 @@ public partial class MainWindow : MetroWindow
     private async void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
         Settings view = new Settings();
-        if (!Directory.Exists(Path.Combine(Configurator.getGamePath(), "gfx", "interface")))
+        if (!Directory.Exists(Path.Combine(Configurator.GetGamePath(), "gfx", "interface")))
         {
             MessageDialogResult result = await ShowWrongGameFolderDialog();
             if (result == MessageDialogResult.Affirmative)
@@ -259,7 +259,7 @@ public partial class MainWindow : MetroWindow
                 }
             }
         }
-        if (!Directory.Exists(Path.Combine(Configurator.getGamePath(), "gfx", "interface")))
+        if (!Directory.Exists(Path.Combine(Configurator.GetGamePath(), "gfx", "interface")))
         {
             SettingsButton_Click(this, new RoutedEventArgs());
         }

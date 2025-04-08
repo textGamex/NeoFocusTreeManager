@@ -57,7 +57,7 @@ public class FileManagerViewModel : ViewModelBase
             var dialog = new OpenFileDialog
             {
                 Title = LocalizationHelper.getValueForKey("Add_Game_File"),
-                InitialDirectory = Configurator.getGamePath(),
+                InitialDirectory = Configurator.GetGamePath(),
                 DefaultDirectory = "C:",
                 Filter = "Focus Tree (*.txt)|*.txt|Localization (*.yml)|*.yml|All files (*.*)|*.*",
                 Multiselect = false
