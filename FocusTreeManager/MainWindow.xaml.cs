@@ -90,6 +90,7 @@ public partial class MainWindow : MetroWindow
 
     private void MetroWindow_Closed(object sender, EventArgs e)
     {
+        ImageHelper.ClearImageGcHandle();
         Application.Current.Shutdown();
     }
 
