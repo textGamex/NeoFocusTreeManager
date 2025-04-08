@@ -99,10 +99,11 @@ public class ProjectEditorViewModel : ViewModelBase
 
     public void DeleteModFolder()
     {
-        if (string.IsNullOrEmpty(selectedString))
+        if (string.IsNullOrEmpty(selectedString) || Project is null)
         {
             return;
         }
+
         Project.ListModFolders.Remove(selectedString);
         AsyncImageLoader.AsyncImageLoader.Worker.RefreshFromMods();
     }

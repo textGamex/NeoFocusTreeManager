@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FocusTreeManager.ViewModel;
-using Imaging.DDSReader;
 using NLog;
+using Pfim;
 
 namespace FocusTreeManager.Helper;
 
@@ -100,7 +98,7 @@ public static class ImageHelper
 
     public static Dictionary<string, ImageSource> RefreshFromMods(ImageType source)
     {
-        var list = new Dictionary<string, ImageSource>();
+        var imageSources = new Dictionary<string, ImageSource>();
         string rightFolder = source switch
         {
             ImageType.Goal => GfxGoalFolder,
@@ -113,7 +111,7 @@ public static class ImageHelper
         model ??= locator.ProjectEditor.Project;
         if (model?.ListModFolders == null)
         {
-            return list;
+            return imageSources;
         }
 
         foreach (string modPath in model.ListModFolders)
@@ -121,11 +119,11 @@ public static class ImageHelper
             string fullPath = Path.Combine(modPath, rightFolder);
             foreach (var image in GetImages(fullPath))
             {
-                list[image.Key] = image.Value;
+                imageSources[image.Key] = image.Value;
             }
         }
 
-        return list;
+        return imageSources;
     }
 
     private static Dictionary<string, ImageSource> GetImages(string path)
@@ -161,7 +159,7 @@ public static class ImageHelper
                         ? ArrayFileName[Array.IndexOf(ArrayAssociatedTypo, imageName)]
                         : imageName;
                 var result = extensionName.Equals(".dds", StringComparison.OrdinalIgnoreCase)
-                    ? ImageSourceForBitmap(DDS.LoadImage(filePath))
+                    ? ImageSourceForBitmap(filePath)
                     : new BitmapImage(new Uri(filePath));
 
                 result.Freeze();
@@ -176,25 +174,48 @@ public static class ImageHelper
         return map;
     }
 
-    [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool DeleteObject([In] IntPtr hObject);
+    private static readonly List<GCHandle> PinnedHandles = new(256);
 
-    private static ImageSource ImageSourceForBitmap(Bitmap bmp)
+    public static void ClearImageGcHandle()
     {
-        IntPtr handle = bmp.GetHbitmap();
-        try
+        foreach (var handle in PinnedHandles)
         {
-            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                handle,
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions()
-            );
+            handle.Free();
         }
-        finally
+        PinnedHandles.Clear();
+    }
+
+    private static BitmapSource ImageSourceForBitmap(string filePath)
+    {
+        var image = Pfimage.FromFile(filePath);
+        var pinnedArray = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+        PinnedHandles.Add(pinnedArray);
+        IntPtr addr = pinnedArray.AddrOfPinnedObject();
+        var bsource = BitmapSource.Create(
+            image.Width,
+            image.Height,
+            96.0,
+            96.0,
+            PixelFormat(image),
+            null,
+            addr,
+            image.DataLen,
+            image.Stride
+        );
+
+        return bsource;
+    }
+
+    private static PixelFormat PixelFormat(IImage image)
+    {
+        return image.Format switch
         {
-            DeleteObject(handle);
-        }
+            ImageFormat.Rgb24 => PixelFormats.Bgr24,
+            ImageFormat.Rgba32 => PixelFormats.Bgra32,
+            ImageFormat.Rgb8 => PixelFormats.Gray8,
+            ImageFormat.R5g5b5a1 or ImageFormat.R5g5b5 => PixelFormats.Bgr555,
+            ImageFormat.R5g6b5 => PixelFormats.Bgr565,
+            _ => throw new Exception($"Unable to convert {image.Format} to WPF PixelFormat")
+        };
     }
 }
