@@ -9,6 +9,7 @@ using FocusTreeManager.DataContract;
 using FocusTreeManager.Model;
 using FocusTreeManager.Model.TabModels;
 using FocusTreeManager.ViewModel;
+using NLog;
 using ParadoxPower.CSharpExtensions;
 using ParadoxPower.Parser;
 using ParadoxPower.Process;
@@ -29,6 +30,8 @@ public static class FocusTreeParser
         "cost",
         "mutually_exclusive"
     ];
+
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public static string ParseTreeForCompare(FocusGridModel model)
     {
@@ -293,15 +296,16 @@ public static class FocusTreeParser
                 }
                 container.FociList.Add(newFocus);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //TODO: Add language support
                 new ViewModelLocator().ErrorDawg.AddError(script.Logger.ErrorsToString());
                 new ViewModelLocator().ErrorDawg.AddError(
                     "Invalid syntax for focus "
                         + script.TryParse(block, "id")
                         + ", please double-check the syntax."
                 );
+
+                Log.Error(ex, "Failed to create focus from script");
             }
         }
         //Run through all foci again for mutually exclusives and prerequisites

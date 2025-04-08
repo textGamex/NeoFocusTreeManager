@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using NLog;
 
 namespace FocusTreeManager.CodeStructures;
 
@@ -22,6 +23,8 @@ public class Script : ICodeStruct
     public Dictionary<int, string> Comments { get; set; }
 
     public ScriptErrorLogger Logger { get; }
+
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public Script()
     {
@@ -67,10 +70,10 @@ public class Script : ICodeStruct
                 }
                 Code.Add(tempo);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //TODO: Add language support
                 Logger.Errors.Add(new SyntaxError("Unknown error in script"));
+                Log.Error(ex, "解析脚本文件失败");
             }
         }
         //Check if there is an assignation or code value at the end of the code
@@ -107,10 +110,10 @@ public class Script : ICodeStruct
             {
                 content += item.Parse(localCopy, StartLevel) + "\n";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //TODO: Add language support
                 Logger.Errors.Add(new SyntaxError("Unknown error in script"));
+                Log.Error(ex, "解析脚本文件失败");
             }
         }
         return content;

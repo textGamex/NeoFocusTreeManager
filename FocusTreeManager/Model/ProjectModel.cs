@@ -129,7 +129,7 @@ public class ProjectModel : ObservableObject, ISupportsUndo
     {
         ProjectModel newproject = new ProjectModel
         {
-            ListModFolders = new ObservableCollection<string>(dataContract.modFolderList),
+            ListModFolders = new ObservableCollection<string>(dataContract.ModFolderList ?? []),
             PreloadGameContent = dataContract.preloadGameContent
         };
         //Build foci list

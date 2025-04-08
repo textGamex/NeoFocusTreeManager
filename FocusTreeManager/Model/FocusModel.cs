@@ -23,18 +23,14 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public string Image
     {
-        get
-        {
-            return image;
-        }
+        get { return image; }
         set
         {
             if (value == image)
             {
                 return;
             }
-            DefaultChangeFactory.Current.OnChanging(this,
-                "Image", image, value, "Image Changed");
+            DefaultChangeFactory.Current.OnChanging(this, "Image", image, value, "Image Changed");
             image = value;
             RaisePropertyChanged(() => Image);
             RaisePropertyChanged(() => Icon);
@@ -46,19 +42,21 @@ public class FocusModel : ObservableObject, ISupportsUndo
     private string uniquename;
 
     public string UniqueName
-    { 
-        get
-        {
-            return uniquename;
-        }
+    {
+        get { return uniquename; }
         set
         {
             if (value == uniquename)
             {
                 return;
             }
-            DefaultChangeFactory.Current.OnChanging(this,
-                "UniqueName", uniquename, value, "UniqueName Changed");
+            DefaultChangeFactory.Current.OnChanging(
+                this,
+                "UniqueName",
+                uniquename,
+                value,
+                "UniqueName Changed"
+            );
             uniquename = value;
             RaisePropertyChanged(() => UniqueName);
             RaisePropertyChanged(() => VisibleName);
@@ -70,18 +68,14 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public string Text
     {
-        get
-        {
-            return text;
-        }
+        get { return text; }
         set
         {
             if (value == text)
             {
                 return;
             }
-            DefaultChangeFactory.Current.OnChanging(this,
-                "Text", text, value, "Text Changed");
+            DefaultChangeFactory.Current.OnChanging(this, "Text", text, value, "Text Changed");
             text = value;
             RaisePropertyChanged(() => Text);
             RaisePropertyChanged(() => VisibleName);
@@ -113,7 +107,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
             {
                 source = Text;
             }
-            LocalisationModel locales = new ViewModelLocator().Main.Project.DefaultLocale;
+            var locales = new ViewModelLocator().Main.Project.DefaultLocale;
             string translation = locales?.translateKey(source + "_desc");
             return translation ?? source + "_desc";
         }
@@ -123,19 +117,20 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public FocusModel CoordinatesRelativeTo
     {
-        get
-        {
-            return coordinatesRelativeTo;
-        }
+        get { return coordinatesRelativeTo; }
         set
         {
             if (value == coordinatesRelativeTo)
             {
                 return;
             }
-            DefaultChangeFactory.Current.OnChanging(this,
-                "CoordinatesRelativeTo", 
-                coordinatesRelativeTo, value, "CoordinatesRelativeTo Changed");
+            DefaultChangeFactory.Current.OnChanging(
+                this,
+                "CoordinatesRelativeTo",
+                coordinatesRelativeTo,
+                value,
+                "CoordinatesRelativeTo Changed"
+            );
             coordinatesRelativeTo = value;
             RaisePropertyChanged(() => X);
             RaisePropertyChanged(() => Y);
@@ -148,39 +143,30 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public int X
     {
-        get
-        {
-            return x;
-        }
+        get { return x; }
         set
         {
             if (value == x)
             {
                 return;
             }
-            UndoService.Current[GetUndoRoot()]
-                .BeginChangeSetBatch("ChangeX", false);
-            DefaultChangeFactory.Current.OnChanging(this,
-                "X", x, value, "X Changed");
+            UndoService.Current[GetUndoRoot()].BeginChangeSetBatch("ChangeX", false);
+            DefaultChangeFactory.Current.OnChanging(this, "X", x, value, "X Changed");
             x = value;
             RaisePropertyChanged(() => X);
             RaisePropertyChanged(() => DisplayX);
-            Messenger.Default.Send(new NotificationMessage(this,
-                new ViewModelLocator().Main.SelectedTab, "PositionChanged"));
+            Messenger.Default.Send(
+                new NotificationMessage(this, new ViewModelLocator().Main.SelectedTab, "PositionChanged")
+            );
         }
     }
 
     public int DisplayX
     {
-        get
-        {
-            return coordinatesRelativeTo != null ?
-                Math.Max(0, coordinatesRelativeTo.DisplayX + x) : x;
-        }
+        get { return coordinatesRelativeTo != null ? Math.Max(0, coordinatesRelativeTo.DisplayX + x) : x; }
         set
         {
-            DefaultChangeFactory.Current.OnChanging(this,
-                "X", x, value, "X Changed");
+            DefaultChangeFactory.Current.OnChanging(this, "X", x, value, "X Changed");
             if (coordinatesRelativeTo != null)
             {
                 x = value - coordinatesRelativeTo.x;
@@ -198,39 +184,30 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public int Y
     {
-        get
-        {
-            return y;
-        }
+        get { return y; }
         set
         {
             if (value == y)
             {
                 return;
             }
-            UndoService.Current[GetUndoRoot()]
-                .BeginChangeSetBatch("ChangeY", false);
-            DefaultChangeFactory.Current.OnChanging(this,
-                "Y", y, value, "Y Changed");
+            UndoService.Current[GetUndoRoot()].BeginChangeSetBatch("ChangeY", false);
+            DefaultChangeFactory.Current.OnChanging(this, "Y", y, value, "Y Changed");
             y = value;
             RaisePropertyChanged(() => Y);
             RaisePropertyChanged(() => DisplayY);
-            Messenger.Default.Send(new NotificationMessage(this,
-                new ViewModelLocator().Main.SelectedTab, "PositionChanged"));
+            Messenger.Default.Send(
+                new NotificationMessage(this, new ViewModelLocator().Main.SelectedTab, "PositionChanged")
+            );
         }
     }
 
     public int DisplayY
     {
-        get
-        {
-            return coordinatesRelativeTo != null ? 
-                Math.Max(0, coordinatesRelativeTo.DisplayY + y) : y;
-        }
+        get { return coordinatesRelativeTo != null ? Math.Max(0, coordinatesRelativeTo.DisplayY + y) : y; }
         set
         {
-            DefaultChangeFactory.Current.OnChanging(this,
-                "Y", y, value, "Y Changed");
+            DefaultChangeFactory.Current.OnChanging(this, "Y", y, value, "Y Changed");
             if (coordinatesRelativeTo != null)
             {
                 y = value - coordinatesRelativeTo.y;
@@ -248,18 +225,14 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public double Cost
     {
-        get
-        {
-            return cost;
-        }
+        get { return cost; }
         set
         {
             if (value == cost)
             {
                 return;
             }
-            DefaultChangeFactory.Current.OnChanging(this,
-                "Cost", cost, value, "Cost Changed");
+            DefaultChangeFactory.Current.OnChanging(this, "Cost", cost, value, "Cost Changed");
             cost = value;
             RaisePropertyChanged(() => Cost);
         }
@@ -269,10 +242,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public Script InternalScript
     {
-        get
-        {
-            return internalScript;
-        }
+        get { return internalScript; }
         set
         {
             if (value == internalScript)
@@ -289,10 +259,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public string Note
     {
-        get
-        {
-            return note;
-        }
+        get { return note; }
         set
         {
             if (value == note)
@@ -316,10 +283,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public bool IsSelected
     {
-        get
-        {
-            return isSelected;
-        }
+        get { return isSelected; }
         set
         {
             //Don't care about undo here
@@ -331,10 +295,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public bool IsWaiting
     {
-        get
-        {
-            return isWaiting;
-        }
+        get { return isWaiting; }
         set
         {
             //Don't care about undo here
@@ -343,7 +304,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
     }
 
     public ObservableCollection<PrerequisitesSetModel> Prerequisite { get; set; }
-        
+
     public ObservableCollection<MutuallyExclusiveSetModel> MutualyExclusive { get; set; }
 
     public RelayCommand EditFocusCommand { get; private set; }
@@ -379,7 +340,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public FocusModel(FocusModel focus)
     {
-        Script newScript = new Script();
+        var newScript = new Script();
         newScript.Analyse(focus.InternalScript.Parse());
         image = focus.Image;
         uniquename = focus.UniqueName;
@@ -394,14 +355,14 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public FocusModel Copy(int XChange = 0, int YChange = 0)
     {
-        Script newScript = new Script();
+        var newScript = new Script();
         newScript.Analyse(InternalScript.Parse());
         return new FocusModel
         {
             Image = Image,
             UniqueName = UniqueName,
             Text = Text,
-            X = CoordinatesRelativeTo != null? X : X + XChange,
+            X = CoordinatesRelativeTo != null ? X : X + XChange,
             Y = CoordinatesRelativeTo != null ? Y : Y + YChange,
             Cost = Cost,
             InternalScript = newScript,
@@ -430,30 +391,32 @@ public class FocusModel : ObservableObject, ISupportsUndo
         //Relative ids
         if (focus.RelativeTo != null)
         {
-            CoordinatesRelativeTo = fociList.FirstOrDefault(f => f.UniqueName
-                                                                 == focus.RelativeTo.UniqueName);
+            CoordinatesRelativeTo = fociList.FirstOrDefault(f => f.UniqueName == focus.RelativeTo.UniqueName);
         }
         //Prerequisites
-        foreach (PrerequisitesSet set in focus.Prerequisite)
+        foreach (var set in focus.Prerequisite)
         {
             //Add the linked focus
-            PrerequisitesSetModel prerequiste = new PrerequisitesSetModel(
-                fociList.FirstOrDefault(f => f.UniqueName == set.Focus.UniqueName));
+            var prerequiste = new PrerequisitesSetModel(
+                fociList.FirstOrDefault(f => f.UniqueName == set.Focus.UniqueName)
+            );
             //Run through all the parents and add them
-            foreach (Focus parent in set.FociList)
+            foreach (var parent in set.FociList)
             {
-                prerequiste.FociList.Add(
-                    fociList.FirstOrDefault(f => f.UniqueName == parent.UniqueName));
+                prerequiste.FociList.Add(fociList.FirstOrDefault(f => f.UniqueName == parent.UniqueName));
             }
             Prerequisite.Add(prerequiste);
         }
         //Mutually exclusives
-        foreach (MutuallyExclusiveSet set in focus.MutualyExclusive)
+        foreach (var set in focus.MutualyExclusive)
         {
             //Create the set with both foci
-            MutualyExclusive.Add(new MutuallyExclusiveSetModel(
-                fociList.FirstOrDefault(f => f.UniqueName == set.Focus1.UniqueName),
-                fociList.FirstOrDefault(f => f.UniqueName == set.Focus2.UniqueName)));
+            MutualyExclusive.Add(
+                new MutuallyExclusiveSetModel(
+                    fociList.FirstOrDefault(f => f.UniqueName == set.Focus1.UniqueName),
+                    fociList.FirstOrDefault(f => f.UniqueName == set.Focus2.UniqueName)
+                )
+            );
         }
     }
 
@@ -462,30 +425,34 @@ public class FocusModel : ObservableObject, ISupportsUndo
         //Relative ids
         if (focus.CoordinatesRelativeTo != null)
         {
-            CoordinatesRelativeTo = fociList.FirstOrDefault(f => f.UniqueName
-                                                                 == focus.CoordinatesRelativeTo.UniqueName);
+            CoordinatesRelativeTo = fociList.FirstOrDefault(f =>
+                f.UniqueName == focus.CoordinatesRelativeTo.UniqueName
+            );
         }
         //Prerequisites
-        foreach (PrerequisitesSetModel set in focus.Prerequisite)
+        foreach (var set in focus.Prerequisite)
         {
             //Add the linked focus
-            PrerequisitesSetModel prerequiste = new PrerequisitesSetModel(
-                fociList.FirstOrDefault(f => f.UniqueName == set.Focus.UniqueName));
+            var prerequiste = new PrerequisitesSetModel(
+                fociList.FirstOrDefault(f => f.UniqueName == set.Focus.UniqueName)
+            );
             //Run through all the parents and add them
-            foreach (FocusModel parent in set.FociList)
+            foreach (var parent in set.FociList)
             {
-                prerequiste.FociList.Add(
-                    fociList.FirstOrDefault(f => f.UniqueName == parent.UniqueName));
+                prerequiste.FociList.Add(fociList.FirstOrDefault(f => f.UniqueName == parent.UniqueName));
             }
             Prerequisite.Add(prerequiste);
         }
         //Mutually exclusives
-        foreach (MutuallyExclusiveSetModel set in focus.MutualyExclusive)
+        foreach (var set in focus.MutualyExclusive)
         {
             //Create the set with both foci
-            MutualyExclusive.Add(new MutuallyExclusiveSetModel(
-                fociList.FirstOrDefault(f => f.UniqueName == set.Focus1.UniqueName),
-                fociList.FirstOrDefault(f => f.UniqueName == set.Focus2.UniqueName)));
+            MutualyExclusive.Add(
+                new MutuallyExclusiveSetModel(
+                    fociList.FirstOrDefault(f => f.UniqueName == set.Focus1.UniqueName),
+                    fociList.FirstOrDefault(f => f.UniqueName == set.Focus2.UniqueName)
+                )
+            );
         }
     }
 
@@ -499,8 +466,9 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public void Edit()
     {
-        FocusGridModel tab = new ViewModelLocator().Main.SelectedTab as FocusGridModel;
-        if (tab == null) return;
+        var tab = new ViewModelLocator().Main.SelectedTab as FocusGridModel;
+        if (tab == null)
+            return;
         tab.ModeType = RelationMode.Edit;
         Messenger.Default.Send(new NotificationMessage(this, "ShowEditFocus"));
     }
@@ -509,66 +477,91 @@ public class FocusModel : ObservableObject, ISupportsUndo
     {
         UndoService.Current[GetUndoRoot()].BeginChangeSetBatch("FullyDeleteFocus", false);
         //Kill the focus sets
-        foreach (MutuallyExclusiveSetModel set in MutualyExclusive.ToList())
+        foreach (var set in MutualyExclusive.ToList())
         {
             set.DeleteSetRelations();
         }
-        foreach (PrerequisitesSetModel set in Prerequisite.ToList())
+        foreach (var set in Prerequisite.ToList())
         {
             set.DeleteSetRelations();
         }
-        Messenger.Default.Send(new NotificationMessage(this, 
-            new ViewModelLocator().Main.SelectedTab, "DeleteFocus"));
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().Main.SelectedTab, "DeleteFocus")
+        );
     }
 
     public void AddPrerequisite(string Type)
     {
-        FocusGridModel tab = new ViewModelLocator().Main.SelectedTab as FocusGridModel;
-        if (tab == null) return;
+        var tab = new ViewModelLocator().Main.SelectedTab as FocusGridModel;
+        if (tab == null)
+            return;
         tab.ModeParam = Type == "Required" ? RelationModeParam.Required : RelationModeParam.Optional;
-        Messenger.Default.Send(new NotificationMessage(this,
-            new ViewModelLocator().Main.SelectedTab, "AddFocusPrerequisite"));
-        Messenger.Default.Send(new NotificationMessage(this,
-            new ViewModelLocator().StatusBar, "Status_Make_Prerequisite"));
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().Main.SelectedTab, "AddFocusPrerequisite")
+        );
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().StatusBar, "Status_Make_Prerequisite")
+        );
     }
 
     public void AddMutuallyExclusive()
     {
-        Messenger.Default.Send(new NotificationMessage(this,
-            new ViewModelLocator().Main.SelectedTab, "AddFocusMutually"));
-        Messenger.Default.Send(new NotificationMessage(this, 
-            new ViewModelLocator().StatusBar, "Status_Make_Exclusive"));
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().Main.SelectedTab, "AddFocusMutually")
+        );
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().StatusBar, "Status_Make_Exclusive")
+        );
     }
 
     public void MakeRelativeTo()
     {
-        Messenger.Default.Send(new NotificationMessage(this,
-            new ViewModelLocator().Main.SelectedTab, "MakeRelativeTo"));
-        Messenger.Default.Send(new NotificationMessage(this,
-            new ViewModelLocator().StatusBar, "Status_Make_Relative"));
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().Main.SelectedTab, "MakeRelativeTo")
+        );
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().StatusBar, "Status_Make_Relative")
+        );
     }
 
     public void FinishSetCommands()
     {
-        FocusGridModel tab = new ViewModelLocator().Main.SelectedTab as FocusGridModel;
-        if (tab == null) return;
+        var tab = new ViewModelLocator().Main.SelectedTab as FocusGridModel;
+        if (tab == null)
+            return;
         switch (tab.ModeType)
         {
             case RelationMode.MutuallyExclusive:
-                Messenger.Default.Send(new NotificationMessage(this,
-                    new ViewModelLocator().Main.SelectedTab, "FinishAddFocusMutually"));
+                Messenger.Default.Send(
+                    new NotificationMessage(
+                        this,
+                        new ViewModelLocator().Main.SelectedTab,
+                        "FinishAddFocusMutually"
+                    )
+                );
                 break;
             case RelationMode.Prerequisite:
-                Messenger.Default.Send(new NotificationMessage(this,
-                    new ViewModelLocator().Main.SelectedTab, "FinishAddFocusPrerequisite"));
+                Messenger.Default.Send(
+                    new NotificationMessage(
+                        this,
+                        new ViewModelLocator().Main.SelectedTab,
+                        "FinishAddFocusPrerequisite"
+                    )
+                );
                 break;
             case RelationMode.RelativeTo:
-                Messenger.Default.Send(new NotificationMessage(this,
-                    new ViewModelLocator().Main.SelectedTab, "FinishMakeRelativeTo"));
+                Messenger.Default.Send(
+                    new NotificationMessage(
+                        this,
+                        new ViewModelLocator().Main.SelectedTab,
+                        "FinishMakeRelativeTo"
+                    )
+                );
                 break;
         }
-        Messenger.Default.Send(new NotificationMessage(this,
-            new ViewModelLocator().StatusBar, "Clear_message"));
+        Messenger.Default.Send(
+            new NotificationMessage(this, new ViewModelLocator().StatusBar, "Clear_message")
+        );
     }
 
     public void EditLocale(string param)
@@ -581,21 +574,16 @@ public class FocusModel : ObservableObject, ISupportsUndo
         switch (param)
         {
             case "VisibleName":
-                LocalizatorViewModel vm = new ViewModelLocator().Localizator;
-                LocalisationModel locales = new ViewModelLocator().Main.Project.DefaultLocale;
-                LocaleModel model = locales.LocalisationMap.FirstOrDefault(
-                    l => l.Key == key);
+                var vm = new ViewModelLocator().Localizator;
+                var locales = new ViewModelLocator().Main.Project.DefaultLocale;
+                var model = locales.LocalisationMap.FirstOrDefault(l => l.Key == key);
                 if (model != null)
                 {
                     vm.Locale = model;
                 }
                 else
                 {
-                    vm.Locale = new LocaleModel
-                    {
-                        Key = key,
-                        Value = VisibleName
-                    };
+                    vm.Locale = new LocaleModel { Key = key, Value = VisibleName };
                 }
                 vm.AddOrUpdateCommand = AddOrUpdateLocale;
                 vm.RaisePropertyChanged(() => vm.Locale);
@@ -603,19 +591,14 @@ public class FocusModel : ObservableObject, ISupportsUndo
             case "Description":
                 vm = new ViewModelLocator().Localizator;
                 locales = new ViewModelLocator().Main.Project.DefaultLocale;
-                model = locales.LocalisationMap.FirstOrDefault(
-                    l => l.Key == key + "_desc");
+                model = locales.LocalisationMap.FirstOrDefault(l => l.Key == key + "_desc");
                 if (model != null)
                 {
                     vm.Locale = model;
                 }
                 else
                 {
-                    vm.Locale = new LocaleModel
-                    {
-                        Key = key + "_desc",
-                        Value = Description
-                    };
+                    vm.Locale = new LocaleModel { Key = key + "_desc", Value = Description };
                 }
                 vm.AddOrUpdateCommand = AddOrUpdateLocale;
                 vm.RaisePropertyChanged(() => vm.Locale);
@@ -625,16 +608,15 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     public bool CanEditLocale(string param)
     {
-        LocalisationModel locales = new ViewModelLocator().Main.Project.DefaultLocale;
+        var locales = new ViewModelLocator().Main.Project.DefaultLocale;
         return locales != null;
     }
 
     public void AddOrUpdateLocale()
     {
-        LocalizatorViewModel vm = new ViewModelLocator().Localizator;
-        LocalisationModel locales = new ViewModelLocator().Main.Project.DefaultLocale;
-        LocaleModel model = locales.LocalisationMap.FirstOrDefault(
-            l => l.Key == vm.Locale.Key);
+        var vm = new ViewModelLocator().Localizator;
+        var locales = new ViewModelLocator().Main.Project.DefaultLocale;
+        var model = locales.LocalisationMap.FirstOrDefault(l => l.Key == vm.Locale.Key);
         if (model == null)
         {
             locales.LocalisationMap.Add(vm.Locale);
@@ -643,7 +625,7 @@ public class FocusModel : ObservableObject, ISupportsUndo
         RaisePropertyChanged(() => VisibleName);
         RaisePropertyChanged(() => Description);
     }
-        
+
     public void setDefaults(int FocusNumber)
     {
         internalScript = new Script();
@@ -656,18 +638,26 @@ public class FocusModel : ObservableObject, ISupportsUndo
 
     #region Undo/Redo
 
-    private void Prerequisite_CollectionChanged(object sender, 
-        NotifyCollectionChangedEventArgs e)
+    private void Prerequisite_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        DefaultChangeFactory.Current.OnCollectionChanged(this, "Prerequisite",
-            Prerequisite, e, "Prerequisite Changed");
+        DefaultChangeFactory.Current.OnCollectionChanged(
+            this,
+            "Prerequisite",
+            Prerequisite,
+            e,
+            "Prerequisite Changed"
+        );
     }
 
-    private void MutualyExclusive_CollectionChanged(object sender, 
-        NotifyCollectionChangedEventArgs e)
+    private void MutualyExclusive_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        DefaultChangeFactory.Current.OnCollectionChanged(this, "MutualyExclusive",
-            MutualyExclusive, e, "MutualyExclusive Changed");
+        DefaultChangeFactory.Current.OnCollectionChanged(
+            this,
+            "MutualyExclusive",
+            MutualyExclusive,
+            e,
+            "MutualyExclusive Changed"
+        );
     }
 
     public object GetUndoRoot()

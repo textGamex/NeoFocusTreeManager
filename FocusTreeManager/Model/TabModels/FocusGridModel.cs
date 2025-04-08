@@ -216,7 +216,7 @@ public class FocusGridModel : ObservableObject, ISupportsUndo
             FociList.Add(new FocusModel(focus));
         }
         //Rerun to create sets
-        foreach (FocusModel model in FociList)
+        foreach (var model in FociList)
         {
             model.RepairSets(
                 container.FociList.FirstOrDefault(f => f.UniqueName == model.UniqueName),

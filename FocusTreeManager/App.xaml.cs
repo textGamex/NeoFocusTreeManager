@@ -1,10 +1,10 @@
 using System;
 using System.Runtime.ExceptionServices;
 using System.Windows;
-using FocusTreeManager.Helper;
 using FocusTreeManager.ViewModel;
 using FocusTreeManager.Views;
 using Microsoft.Extensions.DependencyInjection;
+using NLog;
 
 namespace FocusTreeManager;
 
@@ -13,18 +13,13 @@ namespace FocusTreeManager;
 /// </summary>
 public partial class App : Application
 {
-    //Log only if not in debug
-#if DEBUG
-    public bool toLog = false;
-#else
-    public bool toLog = true;
-#endif
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public App()
     {
         AsyncImageLoader.AsyncImageLoader.Worker.StartTheJob();
         //Logging
-        AppDomain currentDomain = AppDomain.CurrentDomain;
+        var currentDomain = AppDomain.CurrentDomain;
         currentDomain.FirstChanceException += HandleFirstChance;
         currentDomain.UnhandledException += HandleCrashes;
     }
@@ -32,28 +27,24 @@ public partial class App : Application
     public static new App Current => (App)Application.Current;
     public IServiceProvider Services { get; } = ConfigureServices();
 
-    private static IServiceProvider ConfigureServices()
+    private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 
         services.AddTransient<ImagePickerView>();
         services.AddTransient<ChangeImageViewModel>();
         services.AddTransient<AboutView>();
-        
+
         return services.BuildServiceProvider();
     }
 
-    private void HandleFirstChance(object source, FirstChanceExceptionEventArgs e)
+    private static void HandleFirstChance(object? source, FirstChanceExceptionEventArgs e)
     {
-        if (!toLog)
-            return;
-        LoggingHelper.LogException(e.Exception);
+        Log.Error(e.Exception);
     }
 
-    private void HandleCrashes(object sender, UnhandledExceptionEventArgs e)
+    private static void HandleCrashes(object sender, UnhandledExceptionEventArgs e)
     {
-        if (!toLog)
-            return;
-        LoggingHelper.LogCrash((Exception)e.ExceptionObject);
+        Log.Error(e.ExceptionObject);
     }
 }

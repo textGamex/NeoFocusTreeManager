@@ -15,6 +15,7 @@ using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using MonitoredUndo;
+using NLog;
 
 namespace FocusTreeManager.ViewModel;
 
@@ -80,6 +81,8 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
     public RelayCommand UndoCommand { get; private set; }
 
     public RelayCommand RedoCommand { get; private set; }
+    
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public MainViewModel()
     {
@@ -124,7 +127,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
                 }
                 if (command == "Load")
                 {
-                    loadProject();
+                    LoadProject();
                 }
             }
             else if (Result == MessageDialogResult.FirstAuxiliary)
@@ -135,7 +138,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
                 }
                 if (command == "Load")
                 {
-                    loadProject();
+                    LoadProject();
                 }
             }
         }
@@ -147,7 +150,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
             }
             if (command == "Load")
             {
-                loadProject();
+                LoadProject();
             }
         }
     }
@@ -219,7 +222,7 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
         UndoService.Current[GetUndoRoot()].EndChangeSetBatch();
     }
 
-    private void loadProject()
+    private void LoadProject()
     {
         try
         {
@@ -238,8 +241,10 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
                 Mouse.OverrideCursor = null;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex, "加载项目文件失败");
+            
             string Title = LocalizationHelper.getValueForKey("Application_Error");
             string Message = LocalizationHelper.getValueForKey("Application_Error_Loading");
             coordinator.ShowMessageAsync(this, Title, Message);
@@ -323,8 +328,9 @@ public class MainViewModel : ViewModelBase, ISupportsUndo
             }
             Messenger.Default.Send(new NotificationMessage(this, "HideProjectControl"));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex, "保存项目文件失败");
             string Title = LocalizationHelper.getValueForKey("Application_Error");
             string Message = LocalizationHelper.getValueForKey("Application_Error_Saving");
             coordinator.ShowMessageAsync(this, Title, Message);

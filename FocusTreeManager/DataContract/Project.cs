@@ -36,7 +36,7 @@ public sealed class Project
     public List<ScriptContainer> scriptList { get; set; }
 
     [DataMember(Name = "mod_folder_list", Order = 4)]
-    public List<string> modFolderList { get; set; }
+    public List<string>? ModFolderList { get; set; }
 
     [DataMember(Name = "pre_load_content", Order = 5)]
     public bool preloadGameContent { get; set; }
@@ -46,7 +46,7 @@ public sealed class Project
 
     public Project()
     {
-        modFolderList = [];
+        ModFolderList = [];
         fociContainerList = [];
         localisationList = [];
         eventList = [];
@@ -91,7 +91,7 @@ public sealed class Project
     public void UpdateDataContract(ProjectModel model)
     {
         filename = model.Filename;
-        modFolderList = model.ListModFolders.ToList();
+        ModFolderList = model.ListModFolders.ToList();
         preloadGameContent = model.PreloadGameContent;
         //Build foci list
         fociContainerList.Clear();

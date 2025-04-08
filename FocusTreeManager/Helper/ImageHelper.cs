@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FocusTreeManager.ViewModel;
 using Imaging.DDSReader;
+using NLog;
 
 namespace FocusTreeManager.Helper;
 
@@ -20,6 +21,8 @@ public enum ImageType : byte
 
 public static class ImageHelper
 {
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
     private static readonly string[] ArrayFileName =
     [
         "goal_support_democracy",
@@ -50,12 +53,12 @@ public static class ImageHelper
 
     private static readonly string[] ImageDoNotLoad = ["shine_mask", "shine_overlay"];
 
+    private static readonly ImageSource ErrorSource = new BitmapImage(
+        new Uri(Path.Combine(Environment.CurrentDirectory, GfxErrorImage))
+    );
+
     public static ImageSource GetImageFromGame(string imageName, ImageType source)
     {
-        //If we couldn't find the error image, throw an IO exception
-        ImageSource errorSource = new BitmapImage(
-            new Uri(Path.Combine(Environment.CurrentDirectory, GfxErrorImage))
-        );
         //Try to obtain the image
         try
         {
@@ -72,12 +75,13 @@ public static class ImageHelper
                 _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
             };
             //Make sure the value is set, if not, return the error image.
-            return value ?? errorSource;
+            return value ?? ErrorSource;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex, "Failed to load image");
             //If an error occurred, return the error image
-            return errorSource;
+            return ErrorSource;
         }
     }
 
@@ -132,10 +136,10 @@ public static class ImageHelper
 
         foreach (string filePath in Directory.EnumerateFiles(path, "*", SearchOption.TopDirectoryOnly))
         {
-            var extension = Path.GetExtension(filePath.AsSpan());
+            var extensionName = Path.GetExtension(filePath.AsSpan());
             if (
-                !extension.Equals(".dds", StringComparison.OrdinalIgnoreCase)
-                && !extension.Equals(".png", StringComparison.OrdinalIgnoreCase)
+                !extensionName.Equals(".dds", StringComparison.OrdinalIgnoreCase)
+                && !extensionName.Equals(".png", StringComparison.OrdinalIgnoreCase)
             )
             {
                 continue;
@@ -154,16 +158,16 @@ public static class ImageHelper
                     Array.IndexOf(ArrayAssociatedTypo, imageName) != -1
                         ? ArrayFileName[Array.IndexOf(ArrayAssociatedTypo, imageName)]
                         : imageName;
-                var result = extension.Equals(".dds", StringComparison.OrdinalIgnoreCase)
+                var result = extensionName.Equals(".dds", StringComparison.OrdinalIgnoreCase)
                     ? ImageSourceForBitmap(DDS.LoadImage(filePath))
                     : new BitmapImage(new Uri(filePath));
 
                 result.Freeze();
                 map[imageName] = result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored, we don't want to kill the whole process for one missing image
+                Log.Error(ex, "加载图片异常");
             }
         }
 

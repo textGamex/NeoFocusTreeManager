@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace FocusTreeManager.DataContract;
 
 [KnownType(typeof(Focus))]
-[DataContract(Name = "prerequisite", Namespace = "focusesNs")]
+[DataContract(Name = "prerequisite", Namespace = "focusesNs", IsReference = true)]
 public sealed class PrerequisitesSet(Focus focus)
 {
     [DataMember(Name = "focus", Order = 0)]

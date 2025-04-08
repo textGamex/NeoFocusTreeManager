@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using NLog;
 
 namespace FocusTreeManager.ViewModel;
 
@@ -39,6 +40,8 @@ public class FileManagerViewModel : ViewModelBase
     public RelayCommand AcceptCommand { get; set; }
 
     public RelayCommand CancelCommand { get; set; }
+    
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public FileManagerViewModel()
     {
@@ -78,7 +81,7 @@ public class FileManagerViewModel : ViewModelBase
                 else
                 {
                     string contents = System.IO.File.ReadAllText(dialog.FileName);
-                    Script script = new Script();
+                    var script = new Script();
                     script.Analyse(contents);
                     if (script.Logger.hasErrors())
                     {
@@ -132,22 +135,26 @@ public class FileManagerViewModel : ViewModelBase
                             };
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         string Title = LocalizationHelper.getValueForKey("Application_Error");
                         string Message = LocalizationHelper.getValueForKey("Application_Script_Fallback");
                         coordinator.ShowMessageAsync(this, Title, Message);
                         //If it crashed, it is possible it was a generic file
                         File = Parsers.ScriptParser.CreateScriptFromFile(dialog.FileName);
+
+                        Log.Error(ex, "添加游戏文件失败");
                     }
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             string Title = LocalizationHelper.getValueForKey("Application_Error");
             string Message = LocalizationHelper.getValueForKey("Application_Error_Script");
             coordinator.ShowMessageAsync(this, Title, Message);
+
+            Log.Error(ex, "添加游戏文件失败");
         }
         Activate();
     }
@@ -155,7 +162,7 @@ public class FileManagerViewModel : ViewModelBase
     public void SetFileType(object param)
     {
         File = null;
-        ListViewItem item = param as ListViewItem;
+        var item = param as ListViewItem;
         if (item == null)
         {
             return;

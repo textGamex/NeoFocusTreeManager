@@ -7,7 +7,7 @@ namespace FocusTreeManager.DataContract;
 [KnownType(typeof(Script))]
 [KnownType(typeof(PrerequisitesSet))]
 [KnownType(typeof(MutuallyExclusiveSet))]
-[DataContract(Name = "focus", Namespace = "focusesNs")]
+[DataContract(Name = "focus", Namespace = "focusesNs", IsReference = true)]
 public sealed class Focus
 {
     [DataMember(Name = "image", Order = 0)]
