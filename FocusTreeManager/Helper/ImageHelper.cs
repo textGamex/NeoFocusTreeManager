@@ -187,7 +187,7 @@ public static class ImageHelper
 
     private static BitmapSource ImageSourceForBitmap(string filePath)
     {
-        var image = Pfimage.FromFile(filePath);
+        using var image = Pfimage.FromFile(filePath);
         var pinnedArray = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
         PinnedHandles.Add(pinnedArray);
         IntPtr addr = pinnedArray.AddrOfPinnedObject();
