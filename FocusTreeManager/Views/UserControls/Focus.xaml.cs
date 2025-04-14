@@ -8,10 +8,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
+using FocusTreeManager.Helper;
 using FocusTreeManager.Model;
 using FocusTreeManager.Model.TabModels;
 using GalaSoft.MvvmLight.Messaging;
-using FocusTreeManager.Helper;
 
 namespace FocusTreeManager.Views.UserControls;
 
@@ -38,15 +38,14 @@ public partial class Focus : UserControl
 
     private void StartImageDispatcher()
     {
-        FocusModel model = DataContext as FocusModel;
-        if (model == null) return;
+        if (DataContext is not FocusModel model)
+        {
+            return;
+        }
+
         Dispatcher.Invoke(() =>
         {
-            Binding binding = new Binding
-            {
-                Path = new PropertyPath("Icon"),
-                Source = model
-            };
+            var binding = new Binding { Path = new PropertyPath("Icon"), Source = model };
             BindingOperations.SetBinding(FocusIcon, Image.SourceProperty, binding);
         });
     }
@@ -71,8 +70,8 @@ public partial class Focus : UserControl
 
     public void DetectPositionPoints()
     {
-        DependencyObject parent = VisualTreeHelper.GetParent(this);
-        while (!(parent is Grid))
+        var parent = VisualTreeHelper.GetParent(this);
+        while (parent is not Grid)
         {
             if (parent == null)
             {
@@ -81,7 +80,7 @@ public partial class Focus : UserControl
             }
             parent = VisualTreeHelper.GetParent(parent);
         }
-        Point position = TranslatePoint(new Point(1, 1), (FrameworkElement)parent);
+        var position = TranslatePoint(new Point(1, 1), (FrameworkElement)parent);
         //If the focus has not changed position
         if (OldPoint == position)
         {
@@ -89,18 +88,22 @@ public partial class Focus : UserControl
         }
         OldPoint = position;
         FocusModel model = DataContext as FocusModel;
-        if (model == null) return;
-        model.setPoints(new Point(position.X + (RenderSize.Width / 2), position.Y + 40),
+        if (model == null)
+            return;
+        model.setPoints(
+            new Point(position.X + (RenderSize.Width / 2), position.Y + 40),
             new Point(position.X + (RenderSize.Width / 2), position.Y + (RenderSize.Height)),
             new Point(position.X, position.Y + (RenderSize.Height / 2)),
-            new Point(position.X + (RenderSize.Width), position.Y + (RenderSize.Height / 2)));
+            new Point(position.X + (RenderSize.Width), position.Y + (RenderSize.Height / 2))
+        );
         ((FocusGridModel)((FrameworkElement)parent).DataContext).UpdateFocus(model);
     }
 
     private void TextBox_KeyDown(object sender, KeyEventArgs e)
     {
         //If key is not return
-        if (e.Key != Key.Return) return;
+        if (e.Key != Key.Return)
+            return;
         TextBoxName.Visibility = Visibility.Hidden;
         ReleaseMouseCapture();
         e.Handled = true;
@@ -115,13 +118,13 @@ public partial class Focus : UserControl
     private void VisualFocus_MouseDown(object sender, MouseButtonEventArgs e)
     {
         //If the mouse is not captured
-        if (!IsMouseCaptured) return;
+        if (!IsMouseCaptured)
+            return;
         Window window = Window.GetWindow(this);
         if (window != null)
         {
             Point pos = e.GetPosition(window);
-            Rect rect = TransformToVisual(window)
-                .TransformBounds(LayoutInformation.GetLayoutSlot(this));
+            Rect rect = TransformToVisual(window).TransformBounds(LayoutInformation.GetLayoutSlot(this));
             if (!rect.Contains(pos))
             {
                 TextBoxName.Visibility = Visibility.Hidden;
@@ -134,7 +137,8 @@ public partial class Focus : UserControl
     {
         //Property change for blur effect
         FocusModel model = DataContext as FocusModel;
-        if (model == null) return;
+        if (model == null)
+            return;
         model.PropertyChanged += Focus_PropertyChanged;
         //Image loading async
         StartImageDispatcher();
@@ -144,8 +148,10 @@ public partial class Focus : UserControl
     {
         Cursor = ((TextBlock)Resources["CursorGrab"]).Cursor;
         FocusModel model = DataContext as FocusModel;
-        if (model == null) return;
-        if (model.IsWaiting) return;
+        if (model == null)
+            return;
+        if (model.IsWaiting)
+            return;
         FocusGrid.Effect = new DropShadowEffect
         {
             Color = Colors.Yellow,
@@ -159,15 +165,18 @@ public partial class Focus : UserControl
     {
         Cursor = null;
         FocusModel model = DataContext as FocusModel;
-        if (model == null) return;
-        if (model.IsWaiting) return;
+        if (model == null)
+            return;
+        if (model.IsWaiting)
+            return;
         FocusGrid.ClearValue(EffectProperty);
     }
 
     private void Focus_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         FocusModel model = DataContext as FocusModel;
-        if (model == null) return;
+        if (model == null)
+            return;
         if (e.PropertyName == "IsWaiting")
         {
             FocusGrid.ClearValue(EffectProperty);

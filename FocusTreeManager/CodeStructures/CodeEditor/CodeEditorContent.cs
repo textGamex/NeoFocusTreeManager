@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Xml;
 using FocusTreeManager.CodeStructures.CodeExceptions;
 using FocusTreeManager.Helper;
+using NLog;
 
 namespace FocusTreeManager.CodeStructures.CodeEditor;
 
@@ -46,6 +47,8 @@ public class CodeEditorContent
     private const string REGEX_COMMENTS = @"#.*\n";
 
     public Dictionary<string, string> Snippets { get; }
+    
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public CodeEditorContent()
     {
@@ -136,8 +139,9 @@ public class CodeEditorContent
                 text.SetFontStyle(FontStyles.Normal, ClosingBracketPos, 1);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex);
             //It is possible the highlighting may be done before the text 
             //is actually drawn, ignore in this case
         }

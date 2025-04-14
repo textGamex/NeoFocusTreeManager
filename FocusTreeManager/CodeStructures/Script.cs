@@ -1,8 +1,8 @@
-﻿using FocusTreeManager.CodeStructures.CodeExceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using FocusTreeManager.CodeStructures.CodeExceptions;
 using NLog;
 
 namespace FocusTreeManager.CodeStructures;
@@ -38,8 +38,7 @@ public class Script : ICodeStruct
         Code.Clear();
         Tokenizer tokenizer = new Tokenizer();
         List<SyntaxGroup> list =
-            tokenizer.GroupTokensByBlocks(tokenizer.Tokenize(code, this)) 
-                as List<SyntaxGroup>;
+            tokenizer.GroupTokensByBlocks(tokenizer.Tokenize(code, this)) as List<SyntaxGroup>;
         //Set this logger as the tokenizer logger
         Logger.Errors = tokenizer.Logger.Errors;
         //Check if there are errors.
@@ -48,7 +47,8 @@ public class Script : ICodeStruct
             return;
         }
         //Return if list is null
-        if (list == null || !list.Any()) return;
+        if (list == null || !list.Any())
+            return;
         foreach (SyntaxGroup group in list)
         {
             try
@@ -122,8 +122,7 @@ public class Script : ICodeStruct
     public CodeValue FindValue(string TagToFind)
     {
         //Run through all the code and return the found value or none.
-        return Code.Select(item => item.FindValue(TagToFind))
-            .FirstOrDefault(found => found != null);
+        return Code.Select(item => item.FindValue(TagToFind)).FirstOrDefault(found => found != null);
     }
 
     public ICodeStruct Extract(string TagToFind)
@@ -132,7 +131,8 @@ public class Script : ICodeStruct
         {
             ICodeStruct found = item.Extract(TagToFind);
             //If nothing was found, return null
-            if (found == null) continue;
+            if (found == null)
+                continue;
             //Otherwise, extract
             if (Code.Contains(found))
             {
@@ -146,8 +146,7 @@ public class Script : ICodeStruct
     public Assignation FindAssignation(string TagToFind)
     {
         //Run through all the code and return the found value or none.
-        return Code.Select(item => item.FindAssignation(TagToFind)).
-            FirstOrDefault(found => found != null);
+        return Code.Select(item => item.FindAssignation(TagToFind)).FirstOrDefault(found => found != null);
     }
 
     public List<ICodeStruct> FindAllValuesOfType<T>(string TagToFind)
@@ -162,12 +161,10 @@ public class Script : ICodeStruct
 
     public List<Assignation> FindAllAssignationsInRoot(string TagToFind)
     {
-        return Code.OfType<Assignation>()
-            .Where(copy => copy.Assignee == TagToFind).ToList();
+        return Code.OfType<Assignation>().Where(copy => copy.Assignee == TagToFind).ToList();
     }
 
-    public Script GetContentAsScript(string[] except,
-        Dictionary<int, string> comments = null)
+    public Script GetContentAsScript(string[] except, Dictionary<int, string> comments = null)
     {
         Script newScript = new Script();
         foreach (ICodeStruct codeStruct in Code)
@@ -178,14 +175,18 @@ public class Script : ICodeStruct
                 newScript.Code.Add(item);
             }
         }
-        Assignation firstLine = newScript.Code.Where(i => i is Assignation)
-            .OrderBy(i => ((Assignation)i).Line).FirstOrDefault() as Assignation;
-        Assignation lastLine = newScript.Code.Where(i => i is Assignation)
-            .OrderBy(i => ((Assignation)i).Line).LastOrDefault() as Assignation;
+        Assignation firstLine =
+            newScript.Code.Where(i => i is Assignation).OrderBy(i => ((Assignation)i).Line).FirstOrDefault()
+            as Assignation;
+        Assignation lastLine =
+            newScript.Code.Where(i => i is Assignation).OrderBy(i => ((Assignation)i).Line).LastOrDefault()
+            as Assignation;
         //If no lines were found
-        if (firstLine == null || lastLine == null) return newScript;
+        if (firstLine == null || lastLine == null)
+            return newScript;
         //Try to get the comments
-        newScript.Comments = Comments.SkipWhile(c => c.Key < firstLine.Line)
+        newScript.Comments = Comments
+            .SkipWhile(c => c.Key < firstLine.Line)
             .TakeWhile(c => c.Key <= lastLine.Line)
             .ToDictionary(c => c.Key, c => c.Value);
         return newScript;
@@ -203,8 +204,12 @@ public class Script : ICodeStruct
         }
     }
 
-    public string TryParse(ICodeStruct block, string tag,
-        Dictionary<int, string> comments = null, bool isMandatory = true)
+    public string TryParse(
+        ICodeStruct block,
+        string tag,
+        Dictionary<int, string> comments = null,
+        bool isMandatory = true
+    )
     {
         Assignation found = block.FindAssignation(tag);
         if (found != null)
@@ -213,16 +218,16 @@ public class Script : ICodeStruct
             {
                 return found.Value.Parse(comments);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Errors.Add(new SyntaxError(tag, found.Line, null, 
-                    new UnparsableTagException(tag)));
+                Logger.Errors.Add(new SyntaxError(tag, found.Line, null, new UnparsableTagException(tag)));
+
+                Log.Error(ex, "解析脚本文件失败");
             }
         }
         if (isMandatory)
         {
-            Logger.Errors.Add(new SyntaxError(tag, null, null, 
-                new MandatoryTagException(tag)));
+            Logger.Errors.Add(new SyntaxError(tag, null, null, new MandatoryTagException(tag)));
         }
         return null;
     }
