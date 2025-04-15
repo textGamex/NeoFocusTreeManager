@@ -1,8 +1,8 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FocusTreeManager.ViewModel;
@@ -159,7 +159,7 @@ public static class ImageHelper
                         ? ArrayFileName[Array.IndexOf(ArrayAssociatedTypo, imageName)]
                         : imageName;
                 var result = extensionName.Equals(".dds", StringComparison.OrdinalIgnoreCase)
-                    ? ImageSourceForBitmap(filePath)
+                    ? GetImageSource(filePath)
                     : new BitmapImage(new Uri(filePath));
 
                 result.Freeze();
@@ -174,23 +174,25 @@ public static class ImageHelper
         return map;
     }
 
-    private static readonly List<GCHandle> PinnedHandles = new(256);
-
-    public static void ClearImageGcHandle()
+    private sealed class Allocator : IImageAllocator
     {
-        foreach (var handle in PinnedHandles)
+        public byte[] Rent(int size)
         {
-            handle.Free();
+            return ArrayPool<byte>.Shared.Rent(size);
         }
-        PinnedHandles.Clear();
+
+        public void Return(byte[] data)
+        {
+            ArrayPool<byte>.Shared.Return(data);
+        }
     }
 
-    private static BitmapSource ImageSourceForBitmap(string filePath)
+    private static readonly PfimConfig Config = new(32768, TargetFormat.Native, true, new Allocator());
+
+    private static BitmapSource GetImageSource(string filePath)
     {
-        using var image = Pfimage.FromFile(filePath);
-        var pinnedArray = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
-        PinnedHandles.Add(pinnedArray);
-        IntPtr addr = pinnedArray.AddrOfPinnedObject();
+        using var image = Pfimage.FromFile(filePath, Config);
+
         var bsource = BitmapSource.Create(
             image.Width,
             image.Height,
@@ -198,8 +200,7 @@ public static class ImageHelper
             96.0,
             PixelFormat(image),
             null,
-            addr,
-            image.DataLen,
+            image.Data,
             image.Stride
         );
 

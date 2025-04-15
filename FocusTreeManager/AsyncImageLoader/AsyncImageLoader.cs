@@ -81,7 +81,6 @@ public class AsyncImageLoader
 
     public void RefreshFromMods()
     {
-        ImageHelper.ClearImageGcHandle();
         _modWorker.RunWorkerAsync();
     }
 
